@@ -1,0 +1,1437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="KB Foundation — A design case study. Redesigning a Delhi-based NGO's website from charity appeal to skills platform." />
+<title>KB Foundation — From charity to skill platform</title>
+<!-- Open Graph (social sharing) -->
+<meta property="og:title" content="KB Foundation — Case Study by Rohant Chadha">
+<meta property="og:description" content="NGO website redesign: from charity appeal to skills platform.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KB Foundation — Case Study by Rohant Chadha">
+<meta name="twitter:description" content="NGO website redesign: from charity appeal to skills platform.">
+<meta name="twitter:image" content="og-image.png">
+
+  <link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #0e0e10;
+    --ink-2: #5a5a60;
+    --ink-3: #9b9ba2;
+    --rule: #ececec;
+    --warm: #f3f0e9;
+    --lav: #ccdcfd;
+    --lav-deep: #8c9de3;
+    --pink: #ee7fff;
+    --pink-deep: #d099e2;
+    --serif: "Instrument Serif", "Times New Roman", serif;
+    --sans: "JetBrains Mono", ui-monospace, monospace;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+    --r-card: 18px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-feature-settings: "ss01","ss02","cv11";
+    letter-spacing: -0.005em;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  /* ── Top bar ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 18px 28px;
+    font-family: var(--mono); font-size: 12px;
+    mix-blend-mode: difference; color: #dadada;
+    pointer-events: none;
+  }
+
+  .topbar > * { pointer-events: auto; }
+  .topbar .left { display: flex; gap: 18px; }
+  .topbar .center { letter-spacing: 0.04em; white-space: nowrap; }
+  .topbar .right { display: flex; gap: 18px; justify-content: flex-end; }
+  .topbar a { transition: color .2s; }
+  .topbar a:hover { color: #fff; }
+
+  .topbar .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #9aff7d; display: inline-block;
+    vertical-align: 1px; margin-right: 6px;
+    box-shadow: 0 0 0 0 rgba(154,255,125,.6);
+    animation: pulse 2.6s infinite;
+  }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(154,255,125,.5); }
+    70%  { box-shadow: 0 0 0 10px rgba(154,255,125,0); }
+    100% { box-shadow: 0 0 0 0 rgba(154,255,125,0); }
+  }
+
+  /* ── Layout ── */
+  .wrap { max-width: 1480px; margin: 0 auto; padding-left: 40px; padding-right: 40px; }
+
+  .col-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 80px;
+  }
+
+  @media (max-width: 900px) {
+    .col-grid { grid-template-columns: 1fr; gap: 32px; }
+    .wrap { padding-left: 22px; padding-right: 22px; }
+  }
+
+  /* ── Hero ── */
+  .hero { padding-top: 80px; padding-bottom: 40px; position: relative; }
+
+  .hero-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 56px;
+  }
+
+  .back-btn {
+    font-family: var(--mono); font-size: 12px; color: var(--ink-3);
+    letter-spacing: 0.04em; text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: color .2s;
+  }
+  .back-btn:hover { color: var(--ink); }
+  .back-btn .arrow { font-size: 14px; transition: transform .2s; }
+  .back-btn:hover .arrow { transform: translateX(-3px); }
+
+  .cs-eyebrow {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 9px;
+    margin-bottom: 18px;
+  }
+
+  .cs-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--lav-deep); display: inline-block; flex-shrink: 0;
+    box-shadow: 0 0 0 0 rgba(138,161,255,.7);
+    animation: cs-beat 2.2s ease-out infinite;
+  }
+
+  @keyframes cs-beat {
+    0%   { box-shadow: 0 0 0 0 rgba(138,161,255,.7); transform: scale(1); }
+    35%  { box-shadow: 0 0 0 9px rgba(138,161,255,0); transform: scale(1.25); }
+    70%  { box-shadow: 0 0 0 0 rgba(138,161,255,0); transform: scale(1); }
+    85%  { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  @media (max-width: 700px) {
+    .hero { padding-top: 60px; }
+    .hero-nav { margin-bottom: 40px; }
+  }
+
+  .hero h1 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(52px, 10.5vw, 190px);
+    line-height: 0.92; letter-spacing: -0.03em; margin: 0;
+    color: var(--ink);
+  }
+
+  .hero h1 .it { font-style: italic; color: var(--ink-2); }
+  .hero h1 .nb { white-space: nowrap; }
+
+  .hero .sub {
+    margin-top: 36px; max-width: 780px;
+    font-size: clamp(18px, 1.8vw, 26px);
+    line-height: 1.4; color: var(--ink); font-weight: 400;
+  }
+
+  .hero .sub em {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+  }
+
+  .hero-meta {
+    margin-top: 40px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    border-top: 1px solid var(--rule); padding-top: 22px;
+    font-family: var(--mono); font-size: 12px; color: var(--ink-2);
+  }
+
+  .hero-meta b {
+    display: block; color: var(--ink); font-weight: 500;
+    margin-bottom: 6px; font-size: 11px;
+  }
+
+  @media (max-width: 700px) {
+    .hero { padding-top: 120px; padding-bottom: 60px; }
+    .hero-meta { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── Section helpers ── */
+  section { padding: 48px 0; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    letter-spacing: 0.04em; margin-bottom: 18px;
+  }
+
+  h2.kicker {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(34px, 4.8vw, 68px);
+    line-height: 1.04; letter-spacing: -0.02em; margin: 0;
+  }
+
+  h2.kicker em { font-style: italic; color: var(--ink-2); }
+
+  p.lead {
+    font-size: clamp(17px, 1.4vw, 21px);
+    line-height: 1.5; color: var(--ink); max-width: 62ch;
+    margin-bottom: 28px;
+  }
+
+  p.body {
+    font-size: 17px; line-height: 1.65;
+    color: var(--ink-2); max-width: 62ch;
+    margin-bottom: 22px;
+  }
+
+  p.body strong { color: var(--ink); font-weight: 500; }
+
+  /* ── Sticky side label ── */
+  .side { position: sticky; top: 120px; align-self: start; }
+  .side .num { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+  .side .tag {
+    margin-top: 8px; font-family: var(--serif); font-style: italic;
+    font-size: 22px; color: var(--ink); line-height: 1.3;
+  }
+
+  @media (max-width: 900px) {
+    .side { position: static; }
+  }
+
+  /* ── Before / After compare ── */
+  .compare {
+    position: relative; border-radius: var(--r-card); overflow: hidden;
+    border: 1px solid var(--rule); aspect-ratio: 16/10;
+    user-select: none; cursor: ew-resize; background: #fafafa;
+  }
+
+  .compare .pane { position: absolute; inset: 0; }
+
+  .compare .pane.before {
+    background:
+      radial-gradient(900px 600px at 20% 30%, rgba(255,205,160,.7), transparent 60%),
+      radial-gradient(700px 500px at 80% 70%, rgba(160,200,255,.5), transparent 65%),
+      #f3ede3;
+  }
+
+  .compare .pane.after {
+    background: #ffffff;
+    clip-path: inset(0 0 0 50%);
+  }
+
+  .compare .label {
+    position: absolute; top: 18px;
+    font-family: var(--mono); font-size: 11px;
+    background: rgba(0,0,0,.78); color: #fff;
+    padding: 6px 10px; border-radius: 99px; letter-spacing: 0.06em;
+    z-index: 4;
+  }
+
+  .compare .label.l { left: 18px; }
+  .compare .label.r { right: 18px; }
+
+  .compare .handle {
+    position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+    background: var(--ink); transform: translateX(-1px); z-index: 3;
+  }
+
+  .compare .handle .knob {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--ink); color: #fff;
+    display: grid; place-items: center;
+    font-family: var(--mono); font-size: 11px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.25); cursor: grab;
+  }
+
+  .compare .handle .knob:active { cursor: grabbing; }
+
+  .compare .handle .knob svg {
+    width: 18px; height: 18px; fill: none;
+    stroke: #fff; stroke-width: 1.6;
+  }
+
+  /* ── Brand swatches ── */
+  .swatches {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 16px; margin-top: 32px;
+  }
+
+  .sw {
+    border: 1px solid var(--rule); border-radius: 14px; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px; min-height: 200px;
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+
+  .sw:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -20px rgba(0,0,0,.18);
+  }
+
+  .sw .chip { height: 90px; border-radius: 10px; }
+  .sw .name { font-size: 13px; color: var(--ink); font-weight: 500; }
+  .sw .meta { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+  .sw.lav .chip  { background: var(--lav); }
+  .sw.pink .chip { background: var(--pink); }
+  .sw.warm .chip { background: var(--warm); }
+  .sw.ink .chip  { background: var(--ink); }
+  .sw.paper .chip { background: #fff; border: 1px solid var(--rule); }
+
+  @media (max-width: 900px) {
+    .swatches { grid-template-columns: repeat(2, 1fr); }
+    .sw { min-height: 160px; }
+  }
+
+  /* ── Screen browser frame (scrollable window) ── */
+  .screen {
+    border-radius: 24px;
+    border: 1px solid var(--rule); background: #fafafa;
+    position: relative; transform: translateZ(0);
+    max-height: 720px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,.25) transparent;
+    scroll-behavior: smooth;
+  }
+
+  .screen::-webkit-scrollbar { width: 10px; }
+  .screen::-webkit-scrollbar-track { background: transparent; }
+  .screen::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,.22);
+    border-radius: 6px;
+    border: 2px solid #fafafa;
+  }
+  .screen::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,.4); }
+
+  .screen img { width: 100%; height: auto; display: block; }
+
+  @media (max-width: 700px) {
+    .screen { max-height: 540px; }
+  }
+
+  /* ── Custom cursor ── */
+  .cursor {
+    position: fixed; top: 0; left: 0; width: 80px; height: 80px;
+    border-radius: 50%; background: var(--ink); color: #fff;
+    pointer-events: none; z-index: 60;
+    display: grid; place-items: center;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+    transform: translate(-50%,-50%) scale(0);
+    transition: transform .25s cubic-bezier(.2,.7,.2,1.4), background .25s;
+  }
+
+  .cursor.on { transform: translate(-50%,-50%) scale(1); }
+
+  @media (hover: none) { .cursor { display: none; } }
+
+  /* ── Marquee ── */
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    padding: 18px 0;
+    margin-bottom: 80px;
+  }
+
+  .marquee .track {
+    display: flex; gap: 48px; white-space: nowrap;
+    animation: scroll 28s linear infinite;
+  }
+
+  .marquee .track:hover { animation-play-state: paused; }
+
+  .marquee .item {
+    font-family: var(--serif); font-size: clamp(26px, 3vw, 36px);
+    color: var(--ink); display: inline-flex; align-items: center; gap: 48px;
+  }
+
+  .marquee .item em { font-style: italic; color: var(--ink-2); font-size: 0.9em; }
+  .marquee .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink); display: inline-block; }
+
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── Pull quote ── */
+  .pull {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(26px, 4vw, 54px);
+    line-height: 1.14; letter-spacing: -0.01em; color: var(--ink);
+    max-width: 22ch;
+  }
+
+  .pull .at {
+    color: var(--ink-3); font-style: normal;
+    font-family: var(--mono); font-size: 13px;
+    display: block; margin-top: 24px; letter-spacing: 0.04em;
+  }
+
+  /* ── Two-up layout ── */
+  .twoup {
+    display: grid; grid-template-columns: 1.1fr 1fr;
+    gap: 80px; align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .twoup { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  /* ── Courses grid ── */
+  .courses {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; margin-top: 36px;
+  }
+
+  .courses .c {
+    border-radius: 14px; background: var(--warm); padding: 18px;
+    min-height: 220px; display: flex; flex-direction: column;
+    justify-content: space-between;
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+
+  .courses .c:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -24px rgba(0,0,0,.2);
+  }
+
+  .courses .c .dur {
+    font-family: var(--mono); font-size: 10px;
+    background: #fff; display: inline-flex; padding: 6px 10px;
+    border-radius: 99px; gap: 6px; align-items: center; width: max-content;
+  }
+
+  .courses .c .dur::before {
+    content: ""; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--ink);
+  }
+
+  .courses .c h4 {
+    font-family: var(--serif); font-size: 22px; line-height: 1.1;
+    margin: 18px 0 6px; font-weight: 400;
+  }
+
+  .courses .c p {
+    font-size: 11px; color: var(--ink-2); margin: 0; line-height: 1.4;
+  }
+
+  @media (max-width: 900px) {
+    .courses { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .courses { grid-template-columns: 1fr; }
+  }
+
+  /* ── Problem section: text + old-site auto-scroll frame ── */
+  .problem-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+  }
+
+  .problem-text { max-width: 52ch; }
+
+  .old-site-frame {
+    position: relative;
+    height: 360px;
+    border-radius: 14px;
+    border: 1px solid var(--rule);
+    background: #f3ede3;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .old-site-frame img {
+    width: 100%;
+    height: auto;
+    display: block;
+    animation: oldSiteScroll 40s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes oldSiteScroll {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(calc(-100% + 360px)); }
+  }
+
+  .old-site-caption {
+    margin-top: 10px;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--ink-3); letter-spacing: 0.04em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .old-site-frame img { animation: none; }
+  }
+
+  @media (max-width: 1100px) {
+    .problem-body { grid-template-columns: 1fr; gap: 32px; }
+    .old-site-frame { height: 320px; max-width: 420px; }
+    @keyframes oldSiteScroll {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(calc(-100% + 320px)); }
+    }
+  }
+
+  /* ── Refundable model pillars ── */
+  .refund-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px; margin-top: 32px;
+  }
+
+  .pillar {
+    border: 1px solid var(--rule); border-radius: 14px;
+    padding: 22px; background: #fff;
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+
+  .pillar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -20px rgba(0,0,0,.14);
+  }
+
+  .pillar-label {
+    font-family: var(--serif); font-size: 22px; line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .pillar p {
+    font-size: 13px; color: var(--ink-2);
+    line-height: 1.5; margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .refund-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Team grid ── */
+  .team-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; margin-top: 32px;
+  }
+
+  .member {
+    margin: 0; border-radius: 14px;
+    overflow: hidden; background: var(--warm);
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+
+  .member:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -20px rgba(0,0,0,.18);
+  }
+
+  .member img {
+    width: 100%; aspect-ratio: 1/1.15;
+    object-fit: cover; object-position: top center;
+    display: block;
+  }
+
+  .member figcaption {
+    padding: 14px 16px;
+  }
+
+  .member figcaption b {
+    display: block; font-size: 14px;
+    font-weight: 500; color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .member figcaption span {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--ink-3); letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 700px) {
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── Outcomes / shifts block ── */
+  .shifts {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; margin-top: 28px;
+  }
+
+  .shift {
+    border-radius: 14px; padding: 22px;
+    background: var(--warm); min-height: 160px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+
+  .shift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -20px rgba(0,0,0,.18);
+  }
+
+  .shift .from {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--ink-3); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .shift .to {
+    font-family: var(--serif); font-size: 28px;
+    line-height: 1.1; color: var(--ink);
+  }
+
+  .shift .to em { font-style: italic; color: var(--ink-2); }
+
+  .shift .note {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--ink-2); letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 900px) {
+    .shifts { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── Footer detail block ── */
+  .footer-detail {
+    margin-top: 36px;
+    border: 1px solid var(--rule); border-radius: 18px;
+    padding: clamp(28px, 4%, 48px); background: #fafafa;
+  }
+
+  .footer-detail .memorial {
+    font-family: var(--serif);
+    font-size: clamp(24px, 3.5vw, 44px);
+    line-height: 1.12; max-width: 18ch;
+  }
+
+  .footer-detail .meta-row {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    margin-top: 32px; font-family: var(--mono);
+    font-size: 11px; color: var(--ink-3);
+    align-items: center;
+  }
+
+  .footer-detail .meta-row .ml { margin-left: auto; }
+
+  @media (max-width: 600px) {
+    .footer-detail .meta-row .ml { margin-left: 0; }
+  }
+
+  /* ── CTA / footer section ── */
+  .next {
+    border-top: 1px solid var(--rule); padding: 100px 0 70px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+  }
+
+  .next .arrow {
+    font-family: var(--serif);
+    font-size: clamp(44px, 7.5vw, 130px);
+    line-height: 1; letter-spacing: -0.02em;
+  }
+
+  .next .arrow em { font-style: italic; color: var(--ink-2); }
+
+  .next a.cta {
+    font-family: var(--mono); font-size: 12px;
+    padding: 14px 22px; border: 1px solid var(--ink);
+    border-radius: 99px; color: var(--ink);
+    display: inline-flex; gap: 10px; align-items: center;
+    transition: background .25s, color .25s;
+    white-space: nowrap;
+  }
+
+  .next a.cta:hover { background: var(--ink); color: #fff; }
+
+  footer {
+    padding: 28px 0 40px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 600px) {
+    footer { flex-direction: column; gap: 8px; }
+    footer span:last-child { display: none; }
+  }
+
+  /* ── Scroll-reveal ── */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1);
+  }
+
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ── Progress dots ── */
+  .progress {
+    position: fixed; right: 22px; top: 50%;
+    transform: translateY(-50%); z-index: 40;
+    display: flex; flex-direction: column; gap: 14px;
+    pointer-events: none;
+  }
+
+  .progress span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(0,0,0,.18);
+    transition: background .3s, transform .3s;
+  }
+
+  .progress span.on { background: var(--ink); transform: scale(1.6); }
+
+  @media (max-width: 900px) { .progress { display: none; } }
+
+  /* ── Type spec card ── */
+  .type-spec {
+    border: 1px solid var(--rule); border-radius: 18px; padding: 32px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-top: 32px;
+  }
+
+  .type-spec .t1 { font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: clamp(52px, 6vw, 80px); line-height: 0.95; letter-spacing: -0.02em; }
+  .type-spec .t2 { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
+  .type-spec .label { font-family: var(--mono); font-size: 10px; color: var(--ink-3); display: block; margin-bottom: 12px; }
+
+  @media (max-width: 700px) { .type-spec { grid-template-columns: 1fr; } }
+
+  /* ── Mobile topbar tweaks ── */
+  @media (max-width: 580px) {
+    .topbar { padding: 16px 18px; font-size: 11px; }
+    .topbar .left { gap: 12px; }
+    .topbar .right { gap: 12px; }
+  }
+
+  @media (max-width: 420px) {
+    .topbar .left a:last-child { display: none; }
+    .topbar .right a:last-child { display: none; }
+  }
+
+  /* ── Section spacing on mobile ── */
+  @media (max-width: 700px) {
+    section { padding: 24px 0; }
+    .next { padding: 72px 0 56px; }
+  }
+
+  /* ── Screen image lazy placeholder ── */
+  .screen img { background: var(--warm); min-height: 200px; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     MOBILE OPTIMIZATION OVERRIDES — PortfolioMobileV2 sweep
+     Pure CSS additions. Zero content, markup, or asset edits.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* (A) HOVER-GATE every transform/lift effect so iOS taps don't get stuck
+     in a hover state. Transforms preserved on real pointer devices. */
+  body .back-btn:hover .arrow,
+  body .sw:hover,
+  body .courses .c:hover,
+  body .pillar:hover,
+  body .member:hover,
+  body .shift:hover,
+  body .next a.cta:hover { transform: none; box-shadow: none; background: inherit; color: inherit; }
+  @media (hover: hover) and (pointer: fine) {
+    body .back-btn:hover .arrow { transform: translateX(-3px); }
+    body .sw:hover         { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(0,0,0,.18); }
+    body .courses .c:hover { transform: translateY(-4px); box-shadow: 0 24px 48px -24px rgba(0,0,0,.2); }
+    body .pillar:hover     { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(0,0,0,.14); }
+    body .member:hover     { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(0,0,0,.18); }
+    body .shift:hover      { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(0,0,0,.18); }
+    body .next a.cta:hover { background: var(--ink); color: #fff; }
+  }
+
+  /* (B) Touch-friendly tap-highlight off (was only on a few elements) */
+  body a, body button { -webkit-tap-highlight-color: transparent; }
+
+  /* (C) Safe-area-inset awareness — top + bottom for fixed/edge elements */
+  body .topbar {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 18px);
+    padding-left: calc(env(safe-area-inset-left, 0px) + 22px);
+    padding-right: calc(env(safe-area-inset-right, 0px) + 22px);
+  }
+  body footer {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px);
+    padding-left: calc(env(safe-area-inset-left, 0px) + 22px);
+    padding-right: calc(env(safe-area-inset-right, 0px) + 22px);
+  }
+
+  /* (D) FORCE-REVEAL safety net: a missed IntersectionObserver trigger should
+     never leave a section blank. Preserves the desktop fade-in entirely. */
+  @media (max-width: 900px) {
+    body .reveal { opacity: 1 !important; transform: none !important; }
+  }
+
+  /* (E) Mobile micro-tuning — preserve every existing visual */
+  @media (max-width: 700px) {
+    /* Hero meta: 2-col is fine but bump cell gap for breathing */
+    body .hero-meta { gap: 16px 24px; }
+    /* Hero paragraph (.sub): tighten max-width so it doesn't run edge-to-edge */
+    body .hero .sub { font-size: clamp(16px, 4.5vw, 20px); line-height: 1.55; }
+    /* Section vertical padding standardize (original is 24px 0; keep but ensure consistency) */
+    body section.wrap { padding-left: 22px; padding-right: 22px; }
+    /* Marquee tighter band on phone */
+    body .marquee { padding: 14px 0; margin-bottom: 56px; }
+    body .marquee .item { gap: 32px; font-size: clamp(22px, 6vw, 28px); }
+    /* Two-up gap tighten */
+    body .twoup { gap: 32px; }
+    /* Footer-detail memorial readability */
+    body .footer-detail .memorial { font-size: clamp(22px, 7vw, 32px); max-width: 100%; }
+    body .footer-detail .meta-row { gap: 12px 18px; font-size: 10.5px; }
+    /* Next CTA stack vertically with the arrow */
+    body .next { gap: 24px; padding: 64px 0 48px; }
+    body .next .arrow { font-size: clamp(38px, 14vw, 80px); }
+    body .next a.cta { padding: 12px 18px; font-size: 11.5px; }
+    /* Course cards a touch more interior breathing */
+    body .courses .c { padding: 16px; }
+    body .courses .c h4 { font-size: 20px; margin: 14px 0 4px; }
+    /* Pillars: tighter inner padding on phone */
+    body .pillar { padding: 18px; }
+    body .pillar-label { font-size: 19px; }
+    body .pillar p { font-size: 12.5px; }
+    /* Shifts cards: tighten title + min-height on phone */
+    body .shift { padding: 18px; min-height: 140px; }
+    body .shift .to { font-size: 22px; }
+    /* Type spec card: tighten padding on phone */
+    body .type-spec { padding: 22px; gap: 16px; }
+    body .type-spec .t1 { font-size: clamp(40px, 12vw, 64px); }
+    body .type-spec .t2 { font-size: 15px; }
+    /* Compare widget: ensure handle knob is finger-sized */
+    body .compare .handle .knob { width: 56px; height: 56px; }
+    body .compare .label { font-size: 9.5px; padding: 5px 9px; top: 12px; }
+    body .compare .label.l { left: 12px; }
+    body .compare .label.r { right: 12px; }
+    body .compare { aspect-ratio: 16/9; }   /* matches the wide hero screenshots — equal partial crop on both old (2.04:1) and new (1.55:1) */
+    /* Old site frame: a bit shorter on small phones */
+    body .old-site-frame { height: 280px; }
+    @keyframes oldSiteScroll {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(calc(-100% + 280px)); }
+    }
+    /* Eyebrow / cs-eyebrow legibility bump */
+    body .eyebrow, body .cs-eyebrow { font-size: 10.5px; letter-spacing: 0.10em; }
+    /* Pull-quote sizing */
+    body .pull { font-size: clamp(28px, 7.5vw, 42px); max-width: 26ch; }
+    body .pull .at { font-size: 11px; margin-top: 16px; }
+  }
+
+  /* (F) Very small phones (≤ 420px) — final tightening */
+  @media (max-width: 420px) {
+    body .hero { padding-top: calc(env(safe-area-inset-top, 0px) + 100px); padding-bottom: 40px; }
+    body .hero h1 { font-size: clamp(40px, 12vw, 52px); }
+    body .hero-meta { grid-template-columns: 1fr; gap: 10px; }
+    body .compare { aspect-ratio: 16/9; }       /* stay landscape on very narrow screens — the hero PNGs are wide */
+    body .compare .handle .knob { width: 48px; height: 48px; }
+    body .next { flex-direction: column; align-items: flex-start; }
+    body .next a.cta { width: fit-content; }
+  }
+
+  /* (G) Reduced-motion: pause marquee, old-site scroll, transitions */
+  @media (prefers-reduced-motion: reduce) {
+    body .marquee .track { animation: none !important; }
+    body .old-site-frame img { animation: none !important; }
+    body .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+</style>
+<script>
+/* Responsive page redirect — keeps URL in sync with viewport across the 1025px breakpoint */
+(function(){
+  function go(){ window.location.replace("kb-foundation/kb-foundation-case-study.html"); }
+  function check(){ if (window.innerWidth >= 1025) go(); }
+  check();
+  var t;
+  window.addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(check, 300);
+  });
+})();
+</script>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor">drag</div>
+
+<!-- Scroll progress dots -->
+<div class="progress" id="progress"></div>
+
+
+<!-- ── HERO ── -->
+<section class="hero wrap" id="s0">
+  <div class="hero-nav">
+    <a href="mobile-work.html" class="back-btn">
+      <span class="arrow">←</span>
+      <span>Back</span>
+    </a>
+  </div>
+  <div class="cs-eyebrow">
+    <span class="cs-dot"></span>
+    <span>Case Study</span>
+  </div>
+  <h1>
+    <span class="nb">A Charity website</span><br>
+    built as an<br>
+    <span class="it">education platform.</span>
+  </h1>
+
+  <p class="sub">
+    KB Foundation has been running free online classes out of Delhi since 2018. In 2025 they asked me to rebuild the site around a sharper idea — <em>the homepage of a free-education non-profit should look like a course catalogue, not a donation appeal</em>.
+  </p>
+
+  <div class="hero-meta" aria-label="Project details">
+    <div><b>Client</b>KB Foundation, Delhi</div>
+    <div><b>Year</b>2025</div>
+    <div><b>Role</b>Strategy · UX/UI · Content</div>
+    <div><b>Scope</b>Revamp Old Website</div>
+  </div>
+</section>
+
+<!-- ── MARQUEE ── -->
+<div class="marquee" aria-hidden="true">
+  <div class="track">
+    <span class="item">A website that serves the donor, the student, and the volunteer. <span class="dot"></span></span>
+    <span class="item">A website that serves the donor, the student, and the volunteer. <span class="dot"></span></span>
+    <span class="item">A website that serves the donor, the student, and the volunteer. <span class="dot"></span></span>
+    <span class="item">A website that serves the donor, the student, and the volunteer. <span class="dot"></span></span>
+  </div>
+</div>
+
+<!-- ── BEFORE / AFTER COMPARE ── -->
+<section class="wrap" id="s1">
+  <div class="eyebrow">Drag to compare — old site / new site</div>
+  <div class="compare" id="compare" role="img" aria-label="Before and after comparison of KB Foundation website redesign">
+    <!-- Before: old site screenshot -->
+    <div class="pane before">
+      <img
+        src="kb-foundation/assets/Old website hero section.png"
+        alt="Old KB Foundation homepage"
+        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top;"
+        draggable="false"
+      />
+    </div>
+    <!-- After: new site screenshot -->
+    <div class="pane after">
+      <img
+        src="kb-foundation/Screen PNGS/Hero Section New.png"
+        alt="New KB Foundation homepage"
+        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top;"
+        draggable="false"
+      />
+    </div>
+    <div class="label l" aria-hidden="true">BEFORE — 2021</div>
+    <div class="label r" aria-hidden="true">AFTER — 2025</div>
+    <div class="handle" id="handle" aria-hidden="true">
+      <div class="knob">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE PROBLEM ── -->
+<section class="wrap" id="s2">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— The problem</div>
+      <div class="tag">A free-education site that read like a <em>fundraising appeal</em>.</div>
+    </div>
+    <div class="problem-body">
+      <div class="problem-text">
+        <p class="lead">
+          The old website opened with three taglines stacked down the page: <em>"We have faith in raising a generation of empowered souls." "We have faith in a better quality of life for young kids." "We have faith in YOU."</em> It closed with a <em>Support Us</em> section listing school fees, laptops, and teacher salaries.
+        </p>
+        <p class="body">
+          Nowhere on the page could a student find a course, a schedule, or a way to enrol. The audience was donors. The traffic, by then, was students — KB Foundation had grown to <strong>150+ learners across 8 courses</strong> while the website still spoke past them.
+        </p>
+        <p class="body">
+          The brief wasn't an audience problem. It was the <strong>wrong primary audience</strong>.
+        </p>
+      </div>
+
+      <aside class="old-site-wrap" aria-label="The old KB Foundation website, scrolling on loop">
+        <div class="old-site-frame">
+          <img
+            src="kb-foundation/assets/old-website-full-1.png"
+            alt="Full scroll of the old KB Foundation website"
+            loading="lazy"
+          />
+        </div>
+        <div class="old-site-caption">Old website · 2021</div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE DECISION ── -->
+<section class="wrap" id="s3">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— The decision</div>
+      <div class="tag">The decision wasn't how it looks. It was <em>who it's for</em>.</div>
+    </div>
+    <div>
+      <p class="lead">
+        If a free-education non-profit doesn't lead with its courses, it's a brochure. Once you decide the homepage is for not just a donor but a student too, the rest of the site rearranges itself. Courses become the spine. Mission statements become history. The team becomes a page you can actually reach. Donate becomes a pill in the corner — present, never loud. From that one decision, three concrete moves followed.
+      </p>
+      <p class="body">
+        <strong>Language.</strong> The vocabulary changed from charity statements to operational facts. Out went mission, vision, values, and 'we have faith in you'. In came course names with durations and tools, educator bios with credentials, event dates, named testimonials, and volunteer roles you could actually apply for.
+      </p>
+      <p class="body">
+        <strong>Hierarchy.</strong> The homepage now answers a student's questions in the order a student would ask them — what is this, is it real, how does it work, what can I learn, who else trusts it. The donate path runs in parallel: a pill in the persistent nav, a full page when clicked. Neither audience has to scroll past the other.
+      </p>
+      <p class="body">
+        <strong>Trust.</strong> The team came up from a buried "For more information get in touch with…" line to a full About page with four core members and five educator bios — credentials, faces, qualifications. On a free site, students need a reason to believe the teachers are real.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── BRAND KIT ── -->
+<section class="wrap" id="s4">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— The kit</div>
+      <div class="tag">Six pages, <em>one vocabulary</em>.</div>
+    </div>
+    <div>
+      <p class="body" style="margin-top:0">
+        The brief was a website, not a rebrand — the logo stayed. The visual vocabulary built around it spans six pages: Montserrat for every line of type, a family of pastel card tints that vary section to section but share one palette logic, two semantic colours for utility navigation (lavender for Donate, pink for Contact), and a documentary photography ethos that runs through every hero.
+      </p>
+
+      <div class="type-spec">
+        <div>
+          <span class="label">DISPLAY · Montserrat Medium</span>
+          <div class="t1">Learn a skill.</div>
+        </div>
+        <div>
+          <span class="label">BODY · Montserrat Regular</span>
+          <div class="t2">Free, structured online education for students who are motivated to learn but lack access. Pick a course; we'll send you the schedule.</div>
+        </div>
+      </div>
+
+      <div class="swatches" aria-label="Brand colour palette">
+        <div class="sw lav" role="figure" aria-label="Donate Lavender, #CCDCFD">
+          <div class="chip" aria-hidden="true"></div>
+          <div class="name">Donate Lavender</div>
+          <div class="meta">#CCDCFD</div>
+        </div>
+        <div class="sw pink" role="figure" aria-label="Contact Pink, #EE7FFF">
+          <div class="chip" aria-hidden="true"></div>
+          <div class="name">Contact Pink</div>
+          <div class="meta">#EE7FFF</div>
+        </div>
+        <div class="sw warm" role="figure" aria-label="Course Card warm, #F3F0E9">
+          <div class="chip" aria-hidden="true"></div>
+          <div class="name">Course Card</div>
+          <div class="meta">#F3F0E9</div>
+        </div>
+        <div class="sw ink" role="figure" aria-label="Ink, #303030">
+          <div class="chip" aria-hidden="true" style="background:#303030"></div>
+          <div class="name">Ink</div>
+          <div class="meta">#303030</div>
+        </div>
+        <div class="sw paper" role="figure" aria-label="Paper white, #FFFFFF">
+          <div class="chip" aria-hidden="true"></div>
+          <div class="name">Paper</div>
+          <div class="meta">#FFFFFF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOMEPAGE ── -->
+<section class="wrap" id="s5">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— Homepage</div>
+      <div class="tag">The whole offer, in <em>one scroll</em>.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        The homepage opens with <em>"Education That Opens Doors"</em> against a gradient hero and a single CTA — an <strong>About Us</strong> pill — and immediately below, in the same fold, the three numbers that matter: <strong>150+ students, 8 courses, 5 educators</strong>. That stat row is the first thing the old site didn't have. It tells a student arriving from a WhatsApp link that this is a real operation, not a pamphlet.
+      </p>
+      <p class="body">
+        From there the page narrates the offer in order: <strong>How Learning Works</strong> (five blocks — 100% online, small batches, multi-level, tests, certificates), the <strong>Refundable Learning Model</strong>, a horizontal scroll of <strong>Our Programs</strong>, <strong>Our Community</strong> event cards (Diwali get-together, MS Office certification batch), three student testimonials, and a <strong>Make a Difference</strong> CTA that hands volunteers off cleanly. Donate sits where it always sits — a small pastel pill, top-right.
+      </p>
+      <div class="screen reveal" style="margin-top:32px">
+        <img
+          src="kb-foundation/Screen PNGS/Final Homepage.png"
+          alt="KB Foundation homepage — full scroll with hero, How Learning Works, Refundable Model, Programs, Community, Testimonials, Volunteer CTA"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── REFUNDABLE LEARNING MODEL ── -->
+<section class="wrap" id="s6">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— A product decision</div>
+      <div class="tag">A refundable deposit — the only money on a <em>free</em> site.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        Free programs have a dropout problem. When a student pays nothing to enrol, there's nothing to lose by ghosting in week three. KB Foundation already had a workaround — a small refundable deposit returned on completion — but it was buried in a WhatsApp message, not on the website. We made it a homepage section.
+      </p>
+      <p class="body">
+        The design treats it as a feature, not fine print. Three pillars, one line each. The language is plain on purpose — students need to see, immediately, that the deposit is fully refundable and that there are no hidden fees.
+      </p>
+
+      <div class="refund-grid reveal">
+        <div class="pillar">
+          <div class="pillar-label">Fully Refundable</div>
+          <p>The deposit is returned in full after successful completion of the course.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-label">Encourages Commitment</div>
+          <p>Helps students stay consistent through the program and finish what they started.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-label">No Hidden Charges</div>
+          <p>There are no course fees. Only a refundable security deposit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROGRAMS ── -->
+<section class="wrap" id="s7">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— Programs</div>
+      <div class="tag">The page the <em>old site didn't have</em>.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        The old website had no Programs page. Courses didn't exist as a destination — just a mission statement, a list of values, and a Support Us pitch at the bottom. Adding the page is the move that reframes the whole foundation: a charity has a mission, an EdTech has a syllabus. A student now arrives and finds the offer in one place; a donor sees what they'd be funding; a volunteer sees what they'd be teaching. The foundation has been adding new courses to the page on its own since handoff.
+      </p>
+      <div class="screen reveal" style="margin-top:32px">
+        <img
+          src="kb-foundation/Screen PNGS/Programs Page.png"
+          alt="Programs page — seven course cards on a warm background, each with a duration pill, course name, tools rail, and photo"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT & TEAM ── -->
+<section class="wrap" id="s8">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— About &amp; team</div>
+      <div class="tag">A trust funnel, <em>top to bottom</em>.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        The hardest UX problem on a free-education site is belief. A student about to give six months of evenings to a course they don't pay for needs to believe the teachers exist, the foundation is real, and the people running it are qualified. The old site addressed none of it — the whole site was a single-page brochure, and the only team mention was a contact line tucked under the "Support Us" donate ask. The new About page is structured as a trust funnel: belief, then approach, then leadership, then teachers. By the end of the scroll, a student knows whether to trust the people, not the slogan.
+      </p>
+
+      <div class="screen reveal" style="margin-top:32px">
+        <img
+          src="kb-foundation/Screen PNGS/About Page.png"
+          alt="About page — Learning Made Possible hero, Grow With Us six-pillar grid, Core Team arch portraits, Educators bios"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DONATE ── -->
+<section class="wrap" id="s9">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— Donate</div>
+      <div class="tag">A donor's page. <em>Off the student's path.</em></div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        The old website tried to convince a donor and onboard a student in the same scroll — "Support Us" was the only real CTA, sitting at the bottom of the same page meant to introduce the foundation. The new site separates the two paths. Donate gets its own destination, reachable from the persistent nav at any moment. A donor who lands here gets a focused page.
+      </p>
+      <div class="screen reveal" style="margin-top:32px">
+        <img
+          src="kb-foundation/Screen PNGS/Donate Page.png"
+          alt="Donate page — portrait hero, large DONATE lavender bar, Why Your Support Matters card with photo"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VOLUNTEER ── -->
+<section class="wrap" id="s10">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— Volunteer</div>
+      <div class="tag">Filter <em>before</em> the form.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        Volunteers are how KB Foundation scales — the teachers, the mentors, the people who answer WhatsApp on a Wednesday evening. The Volunteer page is built around the single question a prospective volunteer arrives with: <em>"what would I actually do?"</em>
+      </p>
+      <p class="body">
+        The page is built to let volunteers filter themselves before they apply. Three categories, one line each, no form on the page itself — the form lives one click away. A volunteer reads the three lines, decides whether they fit, then clicks through. The foundation gets applications from people who've already decided they belong here.
+      </p>
+      <div class="screen reveal" style="margin-top:32px">
+        <img
+          src="kb-foundation/Screen PNGS/Volunteer Page.png"
+          alt="Volunteer page — hero with whiteboard photo, Why Volunteer card, Who Can Volunteer three colored cards"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section class="wrap" id="s11">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— Contact</div>
+      <div class="tag">No form. An <em>invitation</em>.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        The Contact page is <strong>"Lets Talk."</strong>, an email, and a phone number. No form, no dropdown for "What is this regarding?", no auto-responder. The foundation is small enough that any message goes to a person, not a queue, and the page should say so by being almost empty.
+      </p>
+      <div class="screen reveal" style="margin-top:32px">
+        <img
+          src="kb-foundation/Screen PNGS/Contact Page.png"
+          alt="Contact page — warm portrait hero, Lets Talk heading, email and phone on the right"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── A SMALL DETAIL: KUNAAL ── -->
+<section class="wrap" id="s12">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— A small thing</div>
+      <div class="tag">Where <em>Kunaal</em> ended up.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        KB Foundation was started in memory of Kunaal Bhatia. On the old website, the dedication ran across the top of the page and set the whole tone — the site was, first, a memorial. We moved the dedication to the footer of every page and enlarged it.
+      </p>
+      <p class="body">
+        Same words, different position, different job. The site is now about the students Kunaal would have wanted — not about Kunaal.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT SHIFTED ── -->
+<section class="wrap" id="s13">
+  <div class="col-grid">
+    <div class="side">
+      <div class="num">— What shifted</div>
+      <div class="tag">What the redesign <em>actually shifted</em>.</div>
+    </div>
+    <div>
+      <p class="lead" style="margin-top:0">
+        Real UX shifts the redesign made — each one solving a problem the old site couldn't address.
+      </p>
+
+      <div class="shifts reveal">
+        <div class="shift">
+          <span class="from">Repositioning</span>
+          <div class="to">Brochure <em>→</em> EdTech</div>
+          <span class="note">A charity that asked for support → a school that lists its courses.</span>
+        </div>
+        <div class="shift">
+          <span class="from">Audience</span>
+          <div class="to">One scroll <em>→</em> two paths</div>
+          <span class="note">Donor and student stop sharing a screen — Donate gets its own destination.</span>
+        </div>
+        <div class="shift">
+          <span class="from">Trust</span>
+          <div class="to">Faith <em>→</em> faces</div>
+          <span class="note">From "we have faith in you" to a Core Team and educator bios with credentials.</span>
+        </div>
+        <div class="shift">
+          <span class="from">Proposition</span>
+          <div class="to">Buried <em>→</em> headlined</div>
+          <span class="note">The refundable deposit moved from a WhatsApp footnote to its own homepage section.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── REFLECTION ── -->
+<section class="wrap" id="s14">
+  <div class="twoup">
+    <div>
+      <div class="eyebrow">— Reflection</div>
+      <h2 class="kicker">A brochure became a <em>working website</em>.</h2>
+    </div>
+    <div>
+      <p class="body">
+        The old site was a single-page brochure asking for donations. I turned it into a proper website — one that still does the NGO things (donations, volunteer recruitment) but also actually serves the students it was built for. Same foundation. Three working paths where there was one.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEXT / CTA ── -->
+<section class="wrap" id="s15">
+  <div class="next" style="justify-content:center">
+    <a class="cta" href="mobile-work.html">Back to RohantOS <span style="display:inline-block; transform:rotate(-45deg)" aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>© 2026 — Case study, KB Foundation</span>
+  <span>Designed in Delhi, 2025</span>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Custom cursor (desktop only) ──
+  const cursor = document.getElementById('cursor');
+  let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  let tx = cx, ty = cy;
+
+  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+
+  function tickCursor() {
+    cx += (tx - cx) * 0.18;
+    cy += (ty - cy) * 0.18;
+    cursor.style.left = cx + 'px';
+    cursor.style.top = cy + 'px';
+    requestAnimationFrame(tickCursor);
+  }
+  tickCursor();
+
+  document.querySelectorAll('#compare, .screen').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('on');
+      cursor.textContent = el.id === 'compare' ? 'drag' : 'scroll';
+    });
+    el.addEventListener('mouseleave', () => cursor.classList.remove('on'));
+  });
+
+  // ── Before / After compare slider ──
+  const compare = document.getElementById('compare');
+  const afterPane = compare.querySelector('.pane.after');
+  const handle = document.getElementById('handle');
+  let dragging = false;
+
+  function setSplit(clientX) {
+    const rect = compare.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(100, (clientX - rect.left) / rect.width * 100));
+    afterPane.style.clipPath = `inset(0 0 0 ${pct}%)`;
+    handle.style.left = pct + '%';
+  }
+
+  // Animate in from right when visible
+  let animatedIn = false;
+  function animateIn() {
+    if (animatedIn) return;
+    animatedIn = true;
+    let p = 100;
+    const t = setInterval(() => {
+      p -= 1.5;
+      const rect = compare.getBoundingClientRect();
+      setSplit(rect.left + rect.width * (p / 100));
+      if (p <= 50) clearInterval(t);
+    }, 10);
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) { animateIn(); io.unobserve(compare); } });
+  }, { threshold: 0.4 });
+  io.observe(compare);
+
+  // Mouse
+  compare.addEventListener('mousemove', e => { if (!dragging) setSplit(e.clientX); });
+  compare.addEventListener('mousedown', e => { dragging = true; setSplit(e.clientX); });
+  window.addEventListener('mouseup', () => { dragging = false; });
+  window.addEventListener('mousemove', e => { if (dragging) setSplit(e.clientX); });
+
+  // Touch
+  compare.addEventListener('touchstart', e => { dragging = true; setSplit(e.touches[0].clientX); }, { passive: true });
+  compare.addEventListener('touchmove', e => { if (dragging) setSplit(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener('touchend', () => { dragging = false; });
+
+  // ── Scroll-reveal ──
+  const revealEls = document.querySelectorAll('.reveal');
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('in');
+        ro.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(r => ro.observe(r));
+
+  // ── Progress dots ──
+  const sections = document.querySelectorAll('section[id]');
+  const progressEl = document.getElementById('progress');
+
+  sections.forEach(() => {
+    const s = document.createElement('span');
+    progressEl.appendChild(s);
+  });
+
+  const dots = progressEl.querySelectorAll('span');
+
+  const po = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      const i = [...sections].indexOf(en.target);
+      if (i >= 0 && en.isIntersecting) {
+        dots.forEach((d, j) => d.classList.toggle('on', j === i));
+      }
+    });
+  }, { threshold: 0.5 });
+
+  sections.forEach(s => po.observe(s));
+
+  // ── Marquee: pause on reduced motion ──
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const track = document.querySelector('.marquee .track');
+    if (track) track.style.animation = 'none';
+  }
+})();
+</script>
+</body>
+</html>

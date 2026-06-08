@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>About · Rohant Chadha</title>
+<!-- Open Graph (social sharing) -->
+<meta property="og:title" content="About — Rohant Chadha">
+<meta property="og:description" content="Product Designer & PM, New Delhi.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About — Rohant Chadha">
+<meta name="twitter:description" content="Product Designer & PM, New Delhi.">
+<meta name="twitter:image" content="og-image.png">
+
+  <link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: #6cc5ff;
+    font-family: "Inter", system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  * { box-sizing: border-box; }
+
+  /* ── Pixel landscape scrolling BG ── */
+  #bg {
+    position: fixed; inset: 0; z-index: 0;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+  #bg .layer {
+    position: absolute; inset: 0;
+    background-image: url('pixel-bg.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    image-rendering: pixelated;
+    animation: scrollX 80s linear infinite;
+  }
+  @keyframes scrollX {
+    from { background-position: 0 50%; }
+    to   { background-position: -1200px 50%; }
+  }
+
+  /* sky sparkles */
+  .sparkle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: #fff;
+    box-shadow: 0 0 5px #fff;
+    image-rendering: pixelated;
+    opacity: 0;
+    animation: sp 5s linear infinite;
+    z-index: 1;
+  }
+  @keyframes sp {
+    0%   { transform: translate(0,0); opacity: 0; }
+    20%  { opacity: 1; } 80% { opacity: 0.9; }
+    100% { transform: translate(0,-32px); opacity: 0; }
+  }
+
+  /* ── Stage ── */
+  #stage {
+    position: relative; z-index: 5;
+    display: grid; place-items: center;
+    width: 100%; height: 100%;
+    padding: calc(env(safe-area-inset-top, 0px) + 60px) 14px
+             calc(env(safe-area-inset-bottom, 0px) + 64px);
+    perspective: 1600px;
+  }
+
+  /* ── Card (uses facecardmobile2.jpg — 862×1825) ── */
+  .card {
+    width: min(86vw, calc(82vh * 862 / 1825));
+    aspect-ratio: 862 / 1825;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #cfe6f7;
+    box-shadow:
+      0 18px 36px rgba(0,0,0,0.42),
+      0 0 0 1px rgba(0,0,0,0.12);
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    backface-visibility: visible;
+    position: relative;
+    opacity: 0;
+  }
+  .card img {
+    display: block;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+  .card a.reach-hit {
+    position: absolute;
+    left: 28%; right: 28%;
+    bottom: 11.5%; height: 5.5%;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .card a.reach-hit:active {
+    background: rgba(255,255,255,0.18);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.6) inset;
+  }
+
+  /* Holo shimmer */
+  .holo {
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg,
+      transparent 30%,
+      rgba(255,255,255,0.32) 45%,
+      rgba(255,200,255,0.16) 50%,
+      rgba(180,230,255,0.20) 55%,
+      transparent 70%);
+    background-size: 250% 250%;
+    background-position: 100% 100%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 800ms;
+    border-radius: 14px;
+  }
+  .card.revealed .holo { opacity: 1; animation: shimmer 5s ease-in-out infinite; }
+  @keyframes shimmer {
+    0%, 100% { background-position: 110% 110%; }
+    50%      { background-position: -10% -10%; }
+  }
+
+  /* Buttons */
+  .back-btn, .replay-btn {
+    position: fixed; z-index: 30;
+    background: rgba(10,14,38,0.85);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 9px 12px;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 1px;
+    image-rendering: pixelated;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.35);
+    font-family: "Inter", sans-serif;
+  }
+  .back-btn { top: calc(env(safe-area-inset-top, 0px) + 14px); left: 14px; }
+  .replay-btn {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    right: 16px;
+    background: rgba(217,59,59,0.92);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 300ms, transform 300ms;
+  }
+  .replay-btn.show { opacity: 1; transform: translateY(0); }
+  .back-btn:active, .replay-btn:active { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.45); }
+
+  @media (max-width: 360px) {
+    .back-btn, .replay-btn { font-size: 10px; padding: 8px 10px; }
+  }
+  /* Landscape on phones — keep card visible */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .card { width: min(70vh * (862/1825), 60vw); }
+  }
+</style>
+<script>
+/* Responsive page redirect — keeps URL in sync with viewport across the 1025px breakpoint */
+(function(){
+  function go(){ window.location.replace("about.html"); }
+  function check(){ if (window.innerWidth >= 1025) go(); }
+  check();
+  var t;
+  window.addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(check, 300);
+  });
+})();
+</script>
+</head>
+<body>
+
+<div id="bg">
+  <div class="layer"></div>
+</div>
+
+<a class="back-btn" href="index.html#/desk" onclick="sessionStorage.setItem('skipSplash','1')">◄ BACK</a>
+
+<div id="stage">
+  <div class="card" id="card">
+    <img src="facecardmobile2.jpg" alt="Rohant Chadha — About card" />
+    <a class="reach-hit" href="mobile-contact.html" aria-label="Reach"></a>
+    <div class="holo"></div>
+  </div>
+</div>
+
+<button class="replay-btn" id="replayBtn">↻ REPLAY</button>
+
+<script>
+  /* sky sparkles — fewer on mobile */
+  const bg = document.getElementById('bg');
+  const sparkleCount = window.innerWidth < 500 ? 8 : 14;
+  for (let i = 0; i < sparkleCount; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.top  = (5 + Math.random() * 50) + '%';
+    s.style.animationDelay = (-Math.random() * 5) + 's';
+    s.style.animationDuration = (4 + Math.random() * 4) + 's';
+    bg.appendChild(s);
+  }
+
+  /* One-shot spin entrance */
+  const card = document.getElementById('card');
+  const replayBtn = document.getElementById('replayBtn');
+
+  function play() {
+    card.classList.remove('revealed');
+    replayBtn.classList.remove('show');
+    card.style.transition = 'none';
+    card.style.opacity = '0';
+    card.style.transform = 'rotateY(-540deg) scale(0.35) translateY(-24px)';
+    void card.offsetWidth;
+
+    card.style.transition = 'transform 1400ms cubic-bezier(.2,.9,.25,1.05), opacity 650ms ease-out';
+    card.style.opacity = '1';
+    card.style.transform = 'rotateY(0deg) scale(1) translateY(0)';
+
+    setTimeout(() => {
+      card.classList.add('revealed');
+      replayBtn.classList.add('show');
+    }, 1500);
+  }
+
+  setTimeout(play, 220);
+  replayBtn.addEventListener('click', play);
+</script>
+
+</body>
+</html>

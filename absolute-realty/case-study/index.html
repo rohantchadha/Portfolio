@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Absolute Realty — A case study by Rohant Chadha</title>
+<!-- Open Graph (social sharing) -->
+<meta property="og:title" content="Absolute Realty — Case Study by Rohant Chadha">
+<meta property="og:description" content="A property listings & lead-management tool rebuilt from the ground up.">
+<meta property="og:image" content="../../og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Absolute Realty — Case Study by Rohant Chadha">
+<meta name="twitter:description" content="A property listings & lead-management tool rebuilt from the ground up.">
+<meta name="twitter:image" content="../../og-image.png">
+
+  <link rel="icon" type="image/png" href="../../favicon.png">
+<meta name="description" content="Design case study for Absolute Realty, a luxury real-estate brand by Shaloo Agencies in Gurugram. Designed by Rohant Chadha, 2025." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* =========================================================
+   ABSOLUTE REALTY — CASE STUDY
+   Editorial neutral. Scroll-driven. v1 for hand-off to Claude Design.
+   ========================================================= */
+
+:root {
+  /* Palette — warm parchment, near-black ink */
+  --bg:        #F4F1EC;
+  --bg-deep:   #ECE7DE;
+  --ink:       #16130F;
+  --ink-soft:  #2A2620;
+  --muted:     #6E6860;
+  --hairline:  #D9D3C7;
+  --paper:     #FBF8F2;
+  --accent:    #2F3B2C;   /* deep forest, used sparingly */
+
+  /* Type */
+  --serif:  "Newsreader", "Times New Roman", Georgia, serif;
+  --sans:   "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono:   "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  /* Motion */
+  --ease:    cubic-bezier(.16, 1, .3, 1);
+  --ease-in: cubic-bezier(.7, 0, .84, 0);
+
+  /* Rhythm */
+  --gutter:  clamp(20px, 4vw, 56px);
+  --maxw:    1320px;
+  --maxw-text: 720px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--ink); }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  font-feature-settings: "ss01", "cv01", "kern";
+  overflow-x: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--ink); color: var(--paper); }
+
+/* ---------- Top bar (always visible) ---------- */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px var(--gutter);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  mix-blend-mode: difference;
+  color: #E8E2D5;
+  pointer-events: none;
+}
+.topbar .left, .topbar .right { pointer-events: auto; }
+.topbar .right a { opacity: .7; transition: opacity .2s; }
+.topbar .right a:hover { opacity: 1; }
+
+/* ---------- Progress bar ---------- */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--ink);
+  z-index: 200;
+  transition: width .12s linear;
+  mix-blend-mode: difference;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--gutter);
+  padding-left: 0;          /* Title + logo align to viewport edge — no left gutter */
+  padding-bottom: clamp(48px, 8vh, 96px);
+  background: #11100E;
+  color: #F1ECE0;
+}
+.hero-bg {
+  position: absolute;
+  inset: -6%;
+  background-size: cover;
+  background-position: center;
+  filter: contrast(1.02) brightness(.85);
+  will-change: transform;
+  transform: scale(1.08);
+}
+.hero-video {
+  object-fit: cover;
+  object-position: center;
+  width: 106%;
+  height: 106%;
+  display: block;
+  /* No CSS animation on the video — it loops in place. JS still applies parallax translate. */
+}
+@keyframes kenburns {
+  from { transform: scale(1.06) translate(0, 0); }
+  to   { transform: scale(1.12) translate(-1.5%, -1%); }
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15,14,12,.10) 0%, rgba(15,14,12,0) 30%, rgba(15,14,12,.45) 100%);
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: none;          /* span the full hero, so the title block sits flush at viewport left */
+  margin: 0;
+  padding-right: var(--gutter);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: var(--gutter);
+}
+.hero-title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(24px, 4vh, 48px);
+}
+.hero-logo {
+  width: clamp(216px, 26.4vw, 336px);
+  height: auto;
+  display: block;
+  margin: 0;
+  opacity: .55;
+  filter: invert(.92) brightness(1.6) contrast(.9);
+  transition: opacity .6s var(--ease);
+}
+.hero-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(72px, 13vw, 200px);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  margin: 0;
+  padding: 0;
+  /* Italic A / R bearing overshoots the bounding box.
+     Shift the BOUNDING BOX right by the bearing so the visual stems land on X=0 (blue line). */
+  margin-left: 0.14em;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+}
+.hero-sub {
+  font-family: var(--sans);
+  font-size: clamp(14px, 1.1vw, 16px);
+  letter-spacing: 0.02em;
+  color: #BDB6A6;
+  text-align: right;
+  max-width: 24ch;
+  line-height: 1.5;
+}
+.hero-meta {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 80px var(--gutter) 0;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #BDB6A6;
+  z-index: 2;
+}
+.scroll-cue {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #BDB6A6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: .9;
+}
+.scroll-cue::after {
+  content: "";
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(180deg, #BDB6A6, transparent);
+  animation: cueDrop 2.2s var(--ease) infinite;
+}
+@keyframes cueDrop {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  60%  { transform: scaleY(1); transform-origin: top; }
+  61%  { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ---------- Meta strip ---------- */
+.meta-strip {
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding: 28px var(--gutter);
+  background: var(--bg);
+}
+.meta-strip-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gutter);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.meta-strip dt { color: var(--muted); margin-bottom: 6px; }
+.meta-strip dd { color: var(--ink); font-family: var(--sans); font-size: 14px; text-transform: none; letter-spacing: 0; }
+
+/* ---------- Section primitives ---------- */
+section { position: relative; }
+.shell { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+.section-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(18px, 1.4vw, 22px);
+  letter-spacing: -0.005em;
+  text-transform: none;
+  color: var(--muted);
+  margin-bottom: 14px;
+  line-height: 1.3;
+}
+.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(40px, 6vw, 88px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+}
+.section-title em { font-style: italic; font-weight: 400; }
+
+/* ---------- The Brief (bento grid) ---------- */
+.brief {
+  padding: clamp(96px, 16vh, 200px) 0 clamp(72px, 12vh, 160px);
+}
+.brief-bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(160px, auto);
+  gap: 14px;
+  margin-top: clamp(48px, 8vh, 88px);
+}
+.bento-cell {
+  position: relative;
+  background: var(--bg-deep);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.bento-cell.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.4s var(--ease);
+  display: block;
+}
+.bento-cell.image:hover img { transform: scale(1.05); }
+.bento-cell figcaption {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  mix-blend-mode: difference;
+  opacity: .9;
+  z-index: 2;
+}
+.bento-cell.text {
+  background: var(--paper);
+  padding: clamp(24px, 2.5vw, 36px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.bento-cell.text p {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+  color: var(--ink-soft);
+}
+.bento-cell.text p + p { margin-top: 1em; }
+.bento-cell.text em {
+  font-style: normal;
+  color: var(--ink);
+  font-weight: 500;
+}
+.bento-cell.headline {
+  background: transparent;
+  padding: 0 4px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: 0;
+}
+.bento-cell.mark {
+  background: var(--bg-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.bento-cell.mark img {
+  width: clamp(80px, 9vw, 120px);
+  height: auto;
+  opacity: .75;
+}
+
+/* Cell placements */
+.bento-headline   { grid-column: 1 / -1; grid-row: 1; min-height: clamp(140px, 18vh, 220px); }
+.bento-body       { grid-column: 1 / 3; grid-row: 2 / 4; }
+.bento-hero       { grid-column: 3 / 5; grid-row: 2 / 4; }
+.bento-mark       { grid-column: 1 / 2; grid-row: 4; }
+.bento-wide       { grid-column: 2 / 4; grid-row: 4; }
+.bento-sq         { grid-column: 4 / 5; grid-row: 4; }
+
+/* ---------- Screen showcase (pinned scroll) ---------- */
+.screen-section {
+  background: var(--bg);
+}
+.screen-intro {
+  padding: clamp(96px, 16vh, 180px) 0 clamp(48px, 8vh, 80px);
+}
+.screen-intro .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gutter);
+  align-items: end;
+}
+.screen-intro .row p {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-style: normal;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 38ch;
+  margin-left: auto;
+}
+
+.pin-track {
+  position: relative;
+  height: 380vh;  /* JS may adjust per-section */
+}
+.pin-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr clamp(220px, 22vw, 320px);
+  gap: clamp(20px, 3vw, 48px);
+  padding: 0 var(--gutter);
+  align-items: center;
+  overflow: hidden;
+}
+
+.device {
+  position: relative;
+  width: 100%;
+  height: min(82vh, 760px);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.04),
+    0 8px 24px rgba(20,16,12,.06),
+    0 30px 80px rgba(20,16,12,.18);
+  transform: translateY(20px) scale(.98);
+  opacity: 0;
+  transition: opacity .8s var(--ease), transform 1s var(--ease);
+}
+.pin-section.in-view .device { opacity: 1; transform: translateY(0) scale(1); }
+
+.device-chrome {
+  height: 36px;
+  background: #F4F1EC;
+  border-bottom: 1px solid #E5DFD2;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.device-dots { display: flex; gap: 6px; }
+.device-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #D6CFC0;
+}
+.device-dots span:nth-child(1) { background: #E2A9A0; }
+.device-dots span:nth-child(2) { background: #E2CFA0; }
+.device-dots span:nth-child(3) { background: #B4C9A8; }
+.device-url {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #E5DFD2;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.device-viewport {
+  position: relative;
+  height: calc(100% - 36px);
+  overflow: hidden;
+  background: #FAF8F2;
+}
+.device-scroll {
+  width: 100%;
+  display: block;
+  will-change: transform;
+}
+
+/* Side captions */
+.captions {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.captions-inner {
+  position: relative;
+  width: 100%;
+  height: 240px;
+}
+.caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
+}
+.caption.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.caption .lab {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(14px, 1.1vw, 16px);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.caption .title {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-style: normal;
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.caption .body {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 28ch;
+}
+
+/* Caption progress dots */
+.cap-progress {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  display: flex;
+  gap: 6px;
+}
+.cap-progress span {
+  width: 22px; height: 2px;
+  background: var(--hairline);
+  display: block;
+  transition: background .3s var(--ease);
+}
+.cap-progress span.is-active { background: var(--ink); }
+
+/* ---------- Property Card breakdown ---------- */
+.card-breakdown {
+  padding: clamp(120px, 18vh, 200px) 0 clamp(96px, 14vh, 160px);
+  background: var(--bg);
+  border-top: 1px solid var(--hairline);
+}
+.card-lede {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: clamp(17px, 1.35vw, 20px);
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 52ch;
+  margin-top: clamp(32px, 5vh, 56px);
+}
+.card-stage {
+  position: relative;
+  margin: clamp(56px, 9vh, 104px) 0 clamp(48px, 8vh, 88px);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #E7E7E7;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.04),
+    0 12px 30px rgba(20,16,12,.08),
+    0 40px 90px rgba(20,16,12,.14);
+  transition: transform 1.6s var(--ease);
+}
+.card-stage:hover { transform: translateY(-6px); }
+.card-stage img { width: 100%; display: block; }
+.card-annotations {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+  padding-top: clamp(32px, 5vh, 48px);
+}
+.card-annotations li { display: flex; flex-direction: column; }
+.card-annotations .num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(14px, 1.1vw, 16px);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.card-annotations h4 {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.card-annotations p {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.card-coda {
+  margin-top: clamp(48px, 8vh, 88px);
+  padding-top: clamp(28px, 4vh, 40px);
+  border-top: 1px solid var(--hairline);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(20px, 1.8vw, 28px);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  max-width: 56ch;
+}
+
+/* ---------- Also section ---------- */
+.also {
+  padding: clamp(120px, 18vh, 220px) 0 clamp(72px, 10vh, 120px);
+  background: var(--bg);
+  border-top: 1px solid var(--hairline);
+}
+.also-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(20px, 3vw, 48px);
+  margin-top: clamp(48px, 8vh, 88px);
+}
+.also-figure {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.04),
+    0 6px 18px rgba(20,16,12,.06),
+    0 20px 50px rgba(20,16,12,.10);
+  position: relative;
+  aspect-ratio: 16 / 10;
+}
+.also-figure .frame-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.also-figure.tall { aspect-ratio: 4 / 5; }
+.also-cap {
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ---------- Reflection ---------- */
+.reflection {
+  padding: clamp(140px, 20vh, 240px) 0 clamp(120px, 18vh, 200px);
+  background: var(--bg);
+  border-top: 1px solid var(--hairline);
+}
+.reflection .shell { text-align: left; }
+.reflection .quote {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(40px, 6vw, 92px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  max-width: 16ch;
+}
+.reflection .quote em { font-style: italic; font-weight: 400; }
+.reflection-body {
+  margin-top: clamp(28px, 4vh, 40px);
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: clamp(17px, 1.35vw, 20px);
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+  color: var(--ink-soft);
+  max-width: 56ch;
+}
+.reflection-body em { font-style: normal; color: var(--ink); font-weight: 500; }
+.reflection .sig {
+  margin-top: clamp(64px, 10vh, 120px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gutter);
+  border-top: 1px solid var(--hairline);
+  padding-top: 32px;
+}
+.reflection .sig dt {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.reflection .sig dd {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-style: normal;
+  font-size: clamp(20px, 1.8vw, 26px);
+  color: var(--ink);
+}
+.reflection .sig dd a {
+  border-bottom: 1px solid var(--hairline);
+  transition: border-color .2s;
+}
+.reflection .sig dd a:hover { border-color: var(--ink); }
+
+
+/* ---------- Footer ---------- */
+.foot {
+  padding: 32px var(--gutter);
+  border-top: 1px solid var(--hairline);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ---------- Reveal animation ---------- */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.reveal.is-in { opacity: 1; transform: none; }
+.reveal[data-delay="1"] { transition-delay: .08s; }
+.reveal[data-delay="2"] { transition-delay: .16s; }
+.reveal[data-delay="3"] { transition-delay: .24s; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; align-items: start; }
+  .hero-sub { text-align: left; }
+  .hero-title em { padding-left: 0; }
+  .meta-strip-inner { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .brief-bento { grid-template-columns: repeat(2, 1fr); }
+  .bento-headline { grid-column: 1 / -1; grid-row: auto; }
+  .bento-body     { grid-column: 1 / -1; grid-row: auto; min-height: 220px; }
+  .bento-hero     { grid-column: 1 / -1; grid-row: auto; min-height: 280px; }
+  .bento-mark     { grid-column: 1 / 2; grid-row: auto; min-height: 160px; }
+  .bento-wide     { grid-column: 2 / 3; grid-row: auto; min-height: 160px; }
+  .bento-sq       { grid-column: 1 / -1; grid-row: auto; min-height: 220px; }
+  .screen-intro .row { grid-template-columns: 1fr; gap: 24px; }
+  .screen-intro .row p { margin-left: 0; }
+  .pin-track { height: 320vh; }
+  .pin-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    padding: 16px var(--gutter);
+    gap: 16px;
+  }
+  .device { height: 60vh; }
+  .captions { height: auto; }
+  .captions-inner { height: 120px; }
+  .also-grid { grid-template-columns: 1fr; }
+  .reflection .sig { grid-template-columns: 1fr; gap: 32px; }
+  .card-annotations { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .card-annotations { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .hero-bg { transform: none; }
+  .device { opacity: 1; transform: none; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+<script>
+/* Responsive page redirect — keeps URL in sync with viewport across the 1025px breakpoint */
+(function(){
+  function go(){ window.location.replace("../../mobile-absolute-realty.html"); }
+  function check(){ if (window.innerWidth < 1025) go(); }
+  check();
+  var t;
+  window.addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(check, 300);
+  });
+})();
+</script>
+</head>
+
+<body>
+
+<div class="progress" id="progress"></div>
+
+<header class="topbar">
+  <div class="left">
+    <a href="../../case-studies-v4.html" style="display:inline-flex;align-items:center;gap:6px;opacity:.7;transition:opacity .2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">
+      ← Back
+    </a>
+  </div>
+</header>
+
+<!-- ============== HERO ============== -->
+<section class="hero" id="hero">
+  <video
+    class="hero-bg hero-video"
+    src="assets/herovideo.mp4"
+    autoplay
+    loop
+    muted
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+  ></video>
+  <div class="hero-content">
+    <div class="hero-title-wrap">
+      <img src="assets/logo-absolute.svg" alt="Absolute Realty" class="hero-logo" />
+      <h1 class="hero-title">Absolute<em>Realty</em></h1>
+    </div>
+    <p class="hero-sub">A new website for Absolute Realty, the luxury division of Shaloo Agencies — high-end real estate in Gurugram.</p>
+  </div>
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<!-- ============== META STRIP ============== -->
+<section class="meta-strip">
+  <dl class="meta-strip-inner">
+    <div>
+      <dt>Client</dt>
+      <dd>Absolute Realty<br/><span style="color:var(--muted);font-size:12px">a Unit of Shaloo Agencies</span></dd>
+    </div>
+    <div>
+      <dt>Scope</dt>
+      <dd>Visual identity touch-up<br/>Website design</dd>
+    </div>
+    <div>
+      <dt>Role</dt>
+      <dd>Designer<br/><span style="color:var(--muted);font-size:12px">Freelance</span></dd>
+    </div>
+    <div>
+      <dt>Year / Duration</dt>
+      <dd>2025<br/><span style="color:var(--muted);font-size:12px">Two weeks</span></dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ============== THE BRIEF (bento) ============== -->
+<section class="brief" id="brief">
+  <div class="shell">
+
+    <div class="brief-bento">
+
+      <div class="bento-cell headline bento-headline reveal">
+        <div class="section-num">First, the brief —</div>
+        <h2 class="section-title">A new arm of a forty-year name.</h2>
+      </div>
+
+      <div class="bento-cell text bento-body reveal" data-delay="1">
+        <p>In luxury real estate, "premium" defaults to a stack of treatments — spinning carousels, gold accents, badges that shout "Hot Deal," forms that ask for budget and timeline before a name. Absolute Realty's site does none of that.</p>
+        <p>The home page opens on <em>one render,</em> not seven. Featured projects sit edge-to-edge with three lines apiece — name, location, configuration. The contact form has four fields. There is no chatbot, no countdown, no sticky CTA. <em>Premium, here,</em> is the discipline to remove everything that's trying too hard.</p>
+      </div>
+
+      <figure class="bento-cell image bento-hero reveal" data-delay="2">
+        <img src="assets/villa-highrise.svg" alt="" loading="lazy" />
+      </figure>
+
+      <figure class="bento-cell image bento-mark reveal" data-delay="1">
+        <img src="assets/villa-contemporary.svg" alt="" loading="lazy" />
+      </figure>
+
+      <figure class="bento-cell image bento-wide reveal" data-delay="2">
+        <img src="assets/villa-india.svg" alt="" loading="lazy" />
+      </figure>
+
+      <figure class="bento-cell image bento-sq reveal" data-delay="3">
+        <img src="assets/villa-balcony.svg" alt="" loading="lazy" />
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============== HOME (pinned scroll) ============== -->
+<section class="screen-section pin-section" id="home" data-pin data-svg-height="7240" data-svg-width="1512">
+  <div class="screen-intro shell">
+    <div class="reveal">
+      <div class="section-num">Then, the home page —</div>
+    </div>
+    <div class="row">
+      <h2 class="section-title reveal" data-delay="1">The front door.</h2>
+      <p class="reveal" data-delay="2">Most real estate homepages open with a carousel, three CTAs, and a chatbot. This one opens with one render and one sentence.</p>
+    </div>
+  </div>
+
+  <div class="pin-track">
+    <div class="pin-stage">
+      <div class="device" aria-label="Absolute Realty home page">
+        <div class="device-chrome">
+          <div class="device-dots"><span></span><span></span><span></span></div>
+          <div class="device-url">absolute-realty.in</div>
+        </div>
+        <div class="device-viewport">
+          <img src="assets/homepage.svg" class="device-scroll" alt="Home page — full design" />
+        </div>
+      </div>
+
+      <aside class="captions" aria-hidden="true">
+        <div class="captions-inner">
+          <div class="caption is-active" data-from="0.00" data-to="0.30">
+            <div class="lab">On the hero —</div>
+            <div class="title">Against the genre.</div>
+            <div class="body">A Gurugram realty hero typically opens with a face, a primary CTA, and a stat counter racing toward a round number. The hero here uses none of that — the bet is that this buyer has been advertised at enough, and quiet, for once, will read as serious.</div>
+          </div>
+          <div class="caption" data-from="0.30" data-to="0.55">
+            <div class="lab">On the inventory —</div>
+            <div class="title">A portfolio, not a marketplace.</div>
+            <div class="body">Listing a price turns the page into an exchange. The cards drop the number entirely — one image, three lines of plain text, one quiet "Enquire Now." The negotiation happens off the page, where it should.</div>
+          </div>
+          <div class="caption" data-from="0.55" data-to="0.85">
+            <div class="lab">On the contact —</div>
+            <div class="title">The easy place to lose it.</div>
+            <div class="body">The contact section is where most realty designs quietly overreach — sales copy, popups, "Get Your Free Quote." Holding the same discipline here was the only call worth making.</div>
+          </div>
+          <div class="caption" data-from="0.85" data-to="1.01">
+            <div class="lab">On the close —</div>
+            <div class="title">Quietly, with a way to call.</div>
+            <div class="body">The page closes on a marquee and a contact card — the firm's number, an address, an email. No CTA stacked on a CTA. The way the firm closes a deal is the way the page closes too.</div>
+          </div>
+          <div class="cap-progress" data-progress>
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ABOUT (pinned scroll) ============== -->
+<section class="screen-section pin-section" id="about" data-pin data-svg-height="6652" data-svg-width="1512">
+  <div class="screen-intro shell">
+    <div class="reveal">
+      <div class="section-num">Next, about —</div>
+    </div>
+    <div class="row">
+      <h2 class="section-title reveal" data-delay="1">The long story, told plainly.</h2>
+      <p class="reveal" data-delay="2">Most realty about pages are built for efficiency — services up top, stats, "meet the team," done. This one runs slow on purpose. The pace mirrors how the firm sells: patient, deliberate, one claim at a time.</p>
+    </div>
+  </div>
+
+  <div class="pin-track">
+    <div class="pin-stage">
+      <div class="device" aria-label="Absolute Realty about page">
+        <div class="device-chrome">
+          <div class="device-dots"><span></span><span></span><span></span></div>
+          <div class="device-url">absolute-realty.in/about</div>
+        </div>
+        <div class="device-viewport">
+          <img src="assets/about.svg" class="device-scroll" alt="About page — full design" />
+        </div>
+      </div>
+
+      <aside class="captions" aria-hidden="true">
+        <div class="captions-inner">
+          <div class="caption is-active" data-from="0.00" data-to="0.25">
+            <div class="lab">On the opening —</div>
+            <div class="title">Same playbook, second page.</div>
+            <div class="body">The hero treatment from the home page repeats here — image first, type held back, restraint inherited. The opening has one job: set the tone before the page has to say anything.</div>
+          </div>
+          <div class="caption" data-from="0.25" data-to="0.55">
+            <div class="lab">On the middle —</div>
+            <div class="title">One thought per block.</div>
+            <div class="body">Each section in the middle of the page is a single claim — three or four lines, paired with one image. The pacing is the design: the buyer reads slowly because the page refuses to deliver more than one idea at a time.</div>
+          </div>
+          <div class="caption" data-from="0.55" data-to="1.01">
+            <div class="lab">On the founder —</div>
+            <div class="title">A portrait, not a headshot.</div>
+            <div class="body">The founder gets a half-page image with the composition and light of a magazine portrait — not the circular headshot most about pages settle for. The page wants the buyer to see a person, not a logo.</div>
+          </div>
+          <div class="cap-progress" data-progress>
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PROPERTY CARD BREAKDOWN ============== -->
+<section class="card-breakdown" id="card">
+  <div class="shell">
+    <div class="reveal">
+      <div class="section-num">On the property card —</div>
+      <h2 class="section-title">The smallest brick.</h2>
+    </div>
+
+    <p class="card-lede reveal" data-delay="1">
+      The card is where every deal on the site starts. A buyer who clicks "Download Brochure" gets a form, not a PDF — and the form gets them on a phone with the firm, which is how luxury real estate actually closes.
+    </p>
+
+    <figure class="card-stage reveal" data-delay="2">
+      <img src="assets/property-card.svg" alt="Property card design — Emaar India Business Centre" loading="lazy" />
+    </figure>
+
+    <ol class="card-annotations">
+      <li class="reveal" data-delay="1">
+        <span class="num">On the frame —</span>
+        <h4>Wide horizontal, not vertical.</h4>
+        <p>The card runs wide — render on the right, information on the left. A vertical grid would fit six cards on screen; this layout fits two. The render gets room to breathe, and the buyer reads instead of scans.</p>
+      </li>
+      <li class="reveal" data-delay="2">
+        <span class="num">On the tag —</span>
+        <h4>Two chips, top-left.</h4>
+        <p>Two pills sit at the top-left — one for sale status, one for property type. No "Hot Deal" badges, no countdown timers, no overlays on the image. Classification happens in a glance, and the card moves on.</p>
+      </li>
+      <li class="reveal" data-delay="3">
+        <span class="num">On the co-sign —</span>
+        <h4>Logo, not type.</h4>
+        <p>The developer is named with their logo, not their letters. Emaar's mark carries decades of recognition; placing it on the card instead of typing "Emaar" puts that equity to work on the buyer's eye directly.</p>
+      </li>
+      <li class="reveal" data-delay="4">
+        <span class="num">On the hierarchy —</span>
+        <h4>Four chips, no number.</h4>
+        <p>Four data points sit below the description: location, size, type, price. Three carry numbers; the fourth — price — reads "On request." The empty space is the loudest piece of information on the card.</p>
+      </li>
+    </ol>
+
+    <p class="card-coda reveal" data-delay="2">
+      The card is the one thing on this site that does conversion work — every other section signals; this one is meant to earn the click.
+    </p>
+  </div>
+</section>
+
+<!-- ============== ALSO (smaller features) ============== -->
+<section class="also" id="also">
+  <div class="shell">
+    <div class="reveal">
+      <div class="section-num">And, quieter —</div>
+      <h2 class="section-title">The quieter rooms.</h2>
+    </div>
+
+    <div class="also-grid">
+      <div class="reveal" data-delay="1">
+        <figure class="also-figure">
+          <img class="frame-img" src="assets/contact.svg" alt="Contact page" loading="lazy" />
+        </figure>
+      </div>
+      <div class="reveal" data-delay="2">
+        <figure class="also-figure tall">
+          <img class="frame-img" src="assets/listing-resale.svg" alt="Project listings page — Resale" loading="lazy" />
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== REFLECTION ============== -->
+<section class="reflection" id="reflection">
+  <div class="shell">
+    <div class="reveal">
+      <div class="section-num">Lastly, looking back —</div>
+      <p class="quote">The brief <em>was</em> the project.</p>
+      <p class="reflection-body">The site is live; the firm uses it daily. The thing I learned, after the fact, is that the brief was the actual project — translating <em>"premium"</em> into a system was the real work, and I did it implicitly instead of in writing. Next time, that translation gets written first.</p>
+    </div>
+
+    <dl class="sig reveal" data-delay="1">
+      <div>
+        <dt>Live at</dt>
+        <dd><a href="https://absolute-realty.in/" target="_blank" rel="noopener">absolute-realty.in</a></dd>
+      </div>
+      <div>
+        <dt>Designed by</dt>
+        <dd>Rohant Chadha</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Progress bar ---- */
+  const progressEl = document.getElementById('progress');
+  const updateProgress = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+    progressEl.style.width = pct + '%';
+  };
+
+  /* ---- Reveal-on-enter ---- */
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-in');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  revealEls.forEach(el => revealObs.observe(el));
+
+  /* ---- Pinned screen scroll ---- */
+  const pinSections = document.querySelectorAll('[data-pin]');
+
+  const updatePin = (section) => {
+    const track    = section.querySelector('.pin-track');
+    const scroll   = section.querySelector('.device-scroll');
+    const viewport = section.querySelector('.device-viewport');
+    const captions = section.querySelectorAll('.caption');
+    const dots     = section.querySelectorAll('.cap-progress span');
+
+    if (!track || !scroll || !viewport) return;
+
+    const rect  = track.getBoundingClientRect();
+    const total = track.offsetHeight - window.innerHeight;
+    let progress = -rect.top / total;
+    progress = Math.max(0, Math.min(1, progress));
+
+    // Translate svg within viewport
+    const contentH = scroll.getBoundingClientRect().height;
+    const viewH    = viewport.getBoundingClientRect().height;
+    const maxT     = Math.max(0, contentH - viewH);
+    scroll.style.transform = 'translate3d(0,' + (-progress * maxT) + 'px,0)';
+
+    // Captions
+    let activeIdx = -1;
+    captions.forEach((c, i) => {
+      const from = parseFloat(c.dataset.from);
+      const to   = parseFloat(c.dataset.to);
+      const on   = progress >= from && progress < to;
+      c.classList.toggle('is-active', on);
+      if (on) activeIdx = i;
+    });
+    if (activeIdx === -1 && progress >= 1) activeIdx = captions.length - 1;
+    dots.forEach((d, i) => d.classList.toggle('is-active', i === activeIdx));
+
+    // In-view (for device fade-in)
+    if (rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25) {
+      section.classList.add('in-view');
+    }
+  };
+
+  /* ---- Hero parallax (subtle) ---- */
+  const heroBg = document.querySelector('.hero-bg');
+  const updateHero = () => {
+    if (!heroBg) return;
+    const y = Math.min(window.scrollY, window.innerHeight);
+    heroBg.style.transform = 'scale(1.08) translateY(' + (y * 0.18) + 'px)';
+  };
+
+  /* ---- Main scroll loop (rAF throttled) ---- */
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      updateProgress();
+      updateHero();
+      pinSections.forEach(updatePin);
+      ticking = false;
+    });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  /* ---- Wait for screens to load before first paint of pin ---- */
+  const screens = document.querySelectorAll('.device-scroll');
+  let loaded = 0;
+  const onLoad = () => {
+    loaded++;
+    if (loaded >= screens.length) onScroll();
+  };
+  screens.forEach(img => {
+    if (img.complete) onLoad();
+    else { img.addEventListener('load', onLoad); img.addEventListener('error', onLoad); }
+  });
+
+  // Initial paint
+  onScroll();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact · Rohan T</title>
+<!-- Open Graph (social sharing) -->
+<meta property="og:title" content="Contact — Rohant Chadha">
+<meta property="og:description" content="Get in touch.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Contact — Rohant Chadha">
+<meta name="twitter:description" content="Get in touch.">
+<meta name="twitter:image" content="og-image.png">
+
+  <link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: #6b8cff;
+    font-family: "Press Start 2P", monospace;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+  }
+  * { box-sizing: border-box; image-rendering: pixelated; }
+
+  #stage {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #6b8cff;
+    overflow: hidden;
+  }
+  canvas#scene {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    background: #6b8cff;
+    display: block;
+  }
+
+  .hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    padding: 12px 20px;
+    color: #fff;
+    font-family: "Press Start 2P", monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    display: flex; justify-content: space-between;
+    pointer-events: none;
+    text-shadow: 2px 2px 0 #000;
+    z-index: 5;
+  }
+  .hud .col { display: flex; flex-direction: column; gap: 5px; }
+  .hud .label { opacity: 0.95; }
+  .hud .val { color: #fff; }
+
+  .back-btn {
+    position: absolute; top: 12px; left: 12px;
+    pointer-events: auto;
+    background: #000;
+    color: #fff;
+    font-family: "Press Start 2P", monospace;
+    font-size: 9px;
+    padding: 10px 12px;
+    border: 3px solid #fff;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 1px;
+    image-rendering: pixelated;
+    z-index: 10;
+    transition: transform 60ms;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .back-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.45); }
+  .back-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.35); }
+
+  .replay-btn {
+    position: absolute; bottom: 16px; right: 16px;
+    pointer-events: auto;
+    background: #d93b3b;
+    color: #fff;
+    font-family: "Press Start 2P", monospace;
+    font-size: 9px;
+    padding: 10px 12px;
+    border: 3px solid #000;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+    cursor: pointer;
+    letter-spacing: 1px;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 200ms, transform 200ms;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .replay-btn.show { opacity: 1; transform: translateY(0); }
+  .replay-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.35); }
+
+  .contact-card {
+    position: absolute;
+    left: 50%;
+    top: 38%;
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+    background: #fff;
+    border: 5px solid #000;
+    box-shadow:
+      0 0 0 5px #fff,
+      0 0 0 10px #000,
+      10px 10px 0 5px rgba(0,0,0,0.45);
+    padding: 20px 22px 16px;
+    width: min(400px, 82vw);
+    color: #111;
+    font-family: "Press Start 2P", monospace;
+    z-index: 8;
+    pointer-events: none;
+  }
+  .contact-card.show { animation: cardPop 700ms cubic-bezier(.2,1.6,.4,1) forwards; pointer-events: auto; }
+  @keyframes cardPop {
+    0%   { transform: translate(-50%, 30%) scale(0.1); opacity: 0; }
+    35%  { transform: translate(-50%, -70%) scale(0.6); opacity: 1; }
+    65%  { transform: translate(-50%, -45%) scale(1.05); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  .contact-card h2 {
+    margin: 0 0 14px;
+    font-size: clamp(10px, 3.5vw, 14px);
+    letter-spacing: 2px;
+    text-align: center;
+    color: #d93b3b;
+    text-shadow: 2px 2px 0 #000;
+  }
+  .row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 8px;
+    border-top: 3px dashed #000;
+    font-size: clamp(8px, 2.5vw, 10px);
+    line-height: 1.6;
+  }
+  .row:last-of-type { border-bottom: 3px dashed #000; }
+  .row .glyph {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: #fff;
+    border: 3px solid #000;
+    box-shadow: 3px 3px 0 #000;
+  }
+  .row .glyph svg { display: block; }
+  .row .lbl { color: #777; font-size: clamp(6px, 2vw, 8px); letter-spacing: 1px; margin-bottom: 4px; }
+  .row a, .row span.val {
+    color: #111;
+    text-decoration: none;
+    font-size: clamp(9px, 2.8vw, 11px);
+    word-break: break-all;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .row a:hover { color: #d93b3b; }
+
+  .flag {
+    width: 20px; height: 14px;
+    display: inline-block;
+    background:
+      linear-gradient(#ff9933 0 33.33%, #fff 33.33% 66.66%, #138808 66.66% 100%);
+    border: 2px solid #000;
+    image-rendering: pixelated;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .flag::after {
+    content: "";
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 4px; height: 4px;
+    transform: translate(-50%,-50%);
+    background: #06038d;
+    border-radius: 50%;
+  }
+
+  .footer-tag {
+    text-align: center;
+    margin-top: 12px;
+    font-size: clamp(5px, 1.8vw, 7px);
+    letter-spacing: 2px;
+    color: #888;
+  }
+
+  .start-prompt {
+    position: absolute; left: 50%; top: 70%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: "Press Start 2P", monospace;
+    font-size: clamp(10px, 3.5vw, 14px);
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 0 #000;
+    text-align: center;
+    z-index: 6;
+    animation: blink 700ms steps(2) infinite;
+    white-space: nowrap;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .start-prompt small {
+    display: block;
+    font-size: clamp(6px, 2vw, 8px);
+    margin-top: 10px;
+    opacity: 0.85;
+    animation: none;
+  }
+  .start-prompt.hide { display: none; }
+
+  @media (max-width: 480px) {
+    .hud { font-size: 8px; padding: 8px 12px; }
+    .back-btn { font-size: 8px; padding: 8px 10px; top: 8px; left: 8px; }
+    .replay-btn { font-size: 8px; padding: 8px 10px; bottom: 10px; right: 10px; }
+  }
+</style>
+<script>
+/* Responsive page redirect — keeps URL in sync with viewport across the 1025px breakpoint */
+(function(){
+  function go(){ window.location.replace("mobile-contact.html"); }
+  function check(){ if (window.innerWidth < 1025) go(); }
+  check();
+  var t;
+  window.addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(check, 300);
+  });
+})();
+</script>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="scene" width="512" height="288"></canvas>
+
+  <div class="hud">
+    <div class="col">
+      <span class="label">ROHAN</span>
+      <span class="val" id="hud-score">000000</span>
+    </div>
+    <div class="col" style="align-items:center;">
+      <span class="label">WORLD</span>
+      <span class="val">ROHANT&rsquo;S&nbsp;DESK</span>
+    </div>
+    <div class="col" style="align-items:flex-end;">
+      <span class="label">TIME</span>
+      <span class="val" id="hud-time">--:--</span>
+    </div>
+  </div>
+
+  <a class="back-btn" href="index.html#/desk" onclick="sessionStorage.setItem('skipSplash','1')">&#9668; BACK</a>
+
+  <div class="start-prompt" id="startPrompt">
+    PRESS ANY KEY
+    <small>OR TAP TO START</small>
+  </div>
+
+  <div class="contact-card" id="card">
+    <h2>&#9733; GET IN TOUCH &#9733;</h2>
+    <div class="row">
+      <div class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 16 16" width="20" height="20" shape-rendering="crispEdges">
+          <g fill="#000">
+            <rect x="2" y="2" width="4" height="2"/>
+            <rect x="1" y="3" width="5" height="3"/>
+            <rect x="2" y="5" width="4" height="2"/>
+            <rect x="4" y="6" width="3" height="2"/>
+            <rect x="5" y="7" width="3" height="2"/>
+            <rect x="6" y="8" width="3" height="2"/>
+            <rect x="7" y="9" width="3" height="2"/>
+            <rect x="8" y="10" width="3" height="2"/>
+            <rect x="9" y="11" width="4" height="3"/>
+            <rect x="10" y="12" width="4" height="2"/>
+          </g>
+          <g fill="#fff">
+            <rect x="2" y="4" width="3" height="1"/>
+            <rect x="10" y="13" width="2" height="1"/>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <div class="lbl">PHONE</div>
+        <a href="tel:+919319146758"><span class="flag" aria-hidden="true"></span>&nbsp;+91 93191 46758</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 16 16" width="20" height="20" shape-rendering="crispEdges">
+          <g fill="#000">
+            <rect x="1" y="4" width="14" height="1"/>
+            <rect x="1" y="4" width="1" height="8"/>
+            <rect x="14" y="4" width="1" height="8"/>
+            <rect x="1" y="11" width="14" height="1"/>
+          </g>
+          <g fill="#fff">
+            <rect x="2" y="5" width="12" height="6"/>
+          </g>
+          <g fill="#000">
+            <rect x="2" y="5" width="1" height="1"/>
+            <rect x="3" y="6" width="1" height="1"/>
+            <rect x="4" y="7" width="1" height="1"/>
+            <rect x="5" y="8" width="1" height="1"/>
+            <rect x="6" y="9" width="4" height="1"/>
+            <rect x="10" y="8" width="1" height="1"/>
+            <rect x="11" y="7" width="1" height="1"/>
+            <rect x="12" y="6" width="1" height="1"/>
+            <rect x="13" y="5" width="1" height="1"/>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <div class="lbl">EMAIL</div>
+        <a href="mailto:hello@rohant.design">hello@rohant.design</a>
+      </div>
+    </div>
+    <div class="footer-tag">— THANKS FOR PLAYING —</div>
+  </div>
+
+  <button class="replay-btn" id="replayBtn">&#8635; REPLAY</button>
+</div>
+
+<script>
+const canvas = document.getElementById('scene');
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const W = canvas.width;
+const H = canvas.height;
+const TILE = 16;
+const GROUND_Y = H - TILE * 2;
+
+function resize() {
+  const stage = document.getElementById('stage');
+  const sw = stage.clientWidth;
+  const sh = stage.clientHeight;
+  const scale = Math.max(0.5, Math.min(sw / W, sh / H));
+  canvas.style.width  = Math.floor(W * scale) + 'px';
+  canvas.style.height = Math.floor(H * scale) + 'px';
+}
+window.addEventListener('resize', resize);
+resize();
+
+const C = {
+  sky: '#6b8cff',
+  cloudW: '#ffffff',
+  cloudO: '#000000',
+  hill: '#2aa84a',
+  hillD: '#1c7a36',
+  brick: '#c84a2a',
+  brickD: '#7a2a14',
+  brickH: '#ff8866',
+  mortar: '#000000',
+  pipeG: '#2aa84a',
+  pipeD: '#155522',
+  pipeH: '#86e6a0',
+  blockY: '#e8a85c',
+  blockE: '#7a3e0a',
+  blockH: '#ffd9a0',
+  used: '#9c6a2a',
+  heroSkin: '#ffcfa0',
+  heroSkinD: '#c98a5a',
+  heroCap:  '#e23b22',
+  heroCapD: '#8a1a10',
+  heroShirt:'#e23b22',
+  heroOver: '#2a55d6',
+  heroOverD:'#142a7a',
+  heroGlove:'#ffffff',
+  heroGloveD:'#000000',
+  heroBoot: '#5a2a10',
+  heroBootD:'#2a1208',
+  heroHair: '#3a1f10',
+  heroBtn:  '#ffd400',
+  bugBody: '#9b4dca',
+  bugBodyD: '#5a2a78',
+  bugEye: '#ffffff',
+  bugEyeD: '#000000',
+  coin: '#ffd400',
+  coinD: '#a07a00',
+};
+
+function px(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(Math.round(x), Math.round(y), w, h);
+}
+
+function drawSprite(grid, x, y, palette, flipX = false) {
+  for (let r = 0; r < grid.length; r++) {
+    const row = grid[r];
+    for (let c = 0; c < row.length; c++) {
+      const ch = row[c];
+      if (ch === '.' || ch === ' ') continue;
+      const color = palette[ch];
+      if (!color) continue;
+      const drawX = flipX ? (x + (row.length - 1 - c)) : (x + c);
+      px(drawX, y + r, 1, 1, color);
+    }
+  }
+}
+
+const HERO_STAND = [
+  '....cccccc......',
+  '...CcCCCCcc.....',
+  '...HHsssCCCC....',
+  '..HsskskCCCC....',
+  '..HsskssssCs....',
+  '..HHsmmmmsCs....',
+  '....smsssms.....',
+  '...rrrrrrrr.....',
+  '..GrrOOOOrrG....',
+  '..GGOyOOyOGG....',
+  '..gOOOOOOOOg....',
+  '..gOOoOOoOOg....',
+  '...OOOOOOOO.....',
+  '...OO....OO.....',
+  '...BB....BB.....',
+  '..BbB....BbB....',
+];
+
+const HERO_RUN = [
+  '....cccccc......',
+  '...CcCCCCcc.....',
+  '...HHsssCCCC....',
+  '..HsskskCCCC....',
+  '..HsskssssCs....',
+  '..HHsmmmmsCs....',
+  '....smsssms.....',
+  '...rrrrrrrr.G...',
+  '..GrrOOOOrrGG...',
+  '..GGOyOOyOGG....',
+  '..gOOOOOOOOg....',
+  '..gOOoOOoOOg....',
+  '...OOO..OOO.....',
+  '....OO..OO......',
+  '....BB..BBB.....',
+  '...BbB...BbB....',
+];
+
+const HERO_JUMP = [
+  '....cccccc......',
+  '...CcCCCCcc.....',
+  '...HHsssCCCC....',
+  '..HsskskCCCC.G..',
+  'G.HsskssssCs.GG.',
+  'GGHHsmmmmsCs.G..',
+  '.G..smsssms.....',
+  '.GGrrrrrrrrG....',
+  '..GrrOOOOrrG....',
+  '..GGOyOOyOGG....',
+  '..gOOOOOOOOg....',
+  '..gOOoOOoOOg....',
+  '...OOO..OOO.....',
+  '....BB..BB......',
+  '...BbB..BbB.....',
+  '................',
+];
+
+const HERO_PAL = {
+  c: C.heroCap, C: C.heroCap,
+  H: C.heroHair, s: C.heroSkin, k: C.heroSkinD,
+  m: C.heroHair,
+  r: C.heroShirt,
+  O: C.heroOver, o: C.heroOverD,
+  y: C.heroBtn,
+  G: C.heroGlove, g: C.heroGloveD,
+  B: C.heroBoot, b: C.heroBootD,
+};
+
+const BLOCK = [
+  'EEEEEEEEEEEEEEEE',
+  'EYYYYYYYYYYYYYYE',
+  'EYHHYYYYYYYHHYYE',
+  'EYHHHYYYYYHHHYYE',
+  'EYHHHHHHHHHHHHEE',
+  'EYYHHHHHHHHHHYEE',
+  'EYYYHHHHHHHHYYEE',
+  'EYYYYHHHHHHYYYEE',
+  'EYYYYYHHHHYYYYEE',
+  'EYYYYYYHHYYYYYEE',
+  'EYYYYYYYYYYYYYEE',
+  'EYYYYYYYYYYYYYEE',
+  'EYYYYYYYYYYYYYEE',
+  'EYYYYYYYYYYYYYEE',
+  'EYYYYYYYYYYYYYEE',
+  'EEEEEEEEEEEEEEEE',
+];
+const BLOCK_PAL = { E: C.blockE, Y: C.blockY, H: '#d93b3b' };
+
+const BLOCK_USED = [
+  'EEEEEEEEEEEEEEEE',
+  'EUUUUUUUUUUUUUUE',
+  'EUuuuuuuuuuuuuUE',
+  'EUuUUUUUUUUUUuUE',
+  'EUuUuuuuuuuuUuUE',
+  'EUuUuUUUUUUuUuUE',
+  'EUuUuUuuuuUuUuUE',
+  'EUuUuUuUUuUuUuUE',
+  'EUuUuUuUUuUuUuUE',
+  'EUuUuUuuuuUuUuUE',
+  'EUuUuUUUUUUuUuUE',
+  'EUuUuuuuuuuuUuUE',
+  'EUuUUUUUUUUUUuUE',
+  'EUuuuuuuuuuuuuUE',
+  'EUUUUUUUUUUUUUUE',
+  'EEEEEEEEEEEEEEEE',
+];
+const BLOCK_USED_PAL = { E: C.brickD, U: C.used, u: '#7a4a18' };
+
+const BRICK = [
+  'EEEEEEEEEEEEEEEE',
+  'EBBBBBBBBBBBBBBE',
+  'EBhhBBBBBBBBhhBE',
+  'EBBBBBBBBBBBBBBE',
+  'EBBBBBBBBBBBBBBE',
+  'EEEEEEEEEEEEEEEE',
+  'EEBBBBBBEEBBBBBE',
+  'EBBBBBBBEEBBBBBE',
+  'EBBhhBBBEEBhhBBE',
+  'EBBBBBBBEEBBBBBE',
+  'EBBBBBBBEEBBBBBE',
+  'EEEEEEEEEEEEEEEE',
+  'EBBBBBBBBBBBBBBE',
+  'EBhhBBBBBBBBhhBE',
+  'EBBBBBBBBBBBBBBE',
+  'EEEEEEEEEEEEEEEE',
+];
+const BRICK_PAL = { E: C.mortar, B: C.brick, h: C.brickH };
+
+const CLOUD = [
+  '..........OOOOO.................',
+  '.........OWWWWWO................',
+  '.....OOOOWWWWWWO................',
+  '....OWWWWWWWWWWWOOOO............',
+  '...OWWWWWWWWWWWWWWWO............',
+  '..OWWWWWWWWWWWWWWWWWO...........',
+  '..OWWWWWWWWWWWWWWWWWWO..........',
+  '..OWWWWWWWWWWWWWWWWWWO..........',
+  '..OWWWWWWWWWWWWWWWWWO...........',
+  '...OOOOOOOOOOOOOOOOO............',
+  '................................',
+  '................................',
+];
+const CLOUD_PAL = { O: C.cloudO, W: C.cloudW };
+
+function drawHill(x, baseY, w) {
+  const h = Math.floor(w * 0.45);
+  for (let i = 0; i < h; i++) {
+    const inset = Math.floor(i * (w / (h * 2)));
+    px(x + inset, baseY - i, w - inset * 2, 1, C.hill);
+  }
+  px(x + w / 2 - 4, baseY - 4, 3, 2, C.hillD);
+  px(x + w / 2 + 6, baseY - 8, 2, 2, C.hillD);
+}
+
+function drawPipe(x, y) {
+  for (let i = 0; i < 32; i++) {
+    px(x + 2, y + 8 + i, 28, 1, C.pipeG);
+    px(x + 4, y + 8 + i, 2, 1, C.pipeH);
+    px(x + 26, y + 8 + i, 2, 1, C.pipeD);
+  }
+  px(x, y, 32, 8, C.pipeG);
+  px(x, y, 32, 1, C.pipeD);
+  px(x, y + 7, 32, 1, C.pipeD);
+  px(x, y, 1, 8, C.pipeD);
+  px(x + 31, y, 1, 8, C.pipeD);
+  px(x + 2, y + 1, 4, 2, C.pipeH);
+}
+
+const BUG = [
+  '....BBBBBBBB....',
+  '...BbbbbbbbbB...',
+  '..BbbbbbbbbbbB..',
+  '..BbWWbbbbWWbB..',
+  '..BbWNbbbbWNbB..',
+  '..BbbbbbbbbbbB..',
+  '..BbbbbbbbbbbB..',
+  '.BBbbbbbbbbbbBB.',
+  '.BbbbbbbbbbbbbB.',
+  '.BbbbbbbbbbbbbB.',
+  '.BBbbbbbbbbbbBB.',
+  '..BBbbbbbbbbBB..',
+  '...BBBBBBBBBB...',
+  '...B.B....B.B...',
+  '..BB.BB..BB.BB..',
+  '................',
+];
+const BUG_PAL = { B: C.bugBodyD, b: C.bugBody, W: C.bugEye, N: C.bugEyeD };
+
+function drawSpark(x, y, t) {
+  const r = 2 + Math.floor((Math.sin(t * 0.02) + 1) * 1.5);
+  px(x - r, y, r * 2 + 1, 1, C.coin);
+  px(x, y - r, 1, r * 2 + 1, C.coin);
+  px(x, y, 1, 1, '#fff');
+}
+
+/* ---------- Scene state ---------- */
+const state = {
+  t: 0,
+  startedAt: null,
+  phase: 'idle',
+  hero: { x: -20, y: GROUND_Y - 16, vy: 0, facing: 1, anim: 'stand', frame: 0 },
+  block: { x: 256 - 8, y: GROUND_Y - 16 - 48, hit: false, bumpT: 0, used: false },
+  bug: { x: 300, y: GROUND_Y - 16, vx: -0.9, alive: true, squished: false, squishT: 0 },
+  particles: [],
+  cardShown: false,
+  score: 0,
+};
+
+const card        = document.getElementById('card');
+const replayBtn   = document.getElementById('replayBtn');
+const startPrompt = document.getElementById('startPrompt');
+const hudScore    = document.getElementById('hud-score');
+const hudTime     = document.getElementById('hud-time');
+
+function updateClock() {
+  const d = new Date();
+  let h = d.getHours();
+  const m = d.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if (h === 0) h = 12;
+  hudTime.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+}
+updateClock();
+setInterval(updateClock, 15000);
+
+function startAnimation() {
+  if (state.phase !== 'idle') return;
+  state.phase = 'run';
+  state.startedAt = performance.now();
+  startPrompt.classList.add('hide');
+}
+
+function resetAnimation() {
+  state.t = 0;
+  state.startedAt = null;
+  state.phase = 'idle';
+  state.hero = { x: -20, y: GROUND_Y - 16, vy: 0, facing: 1, anim: 'stand', frame: 0 };
+  state.block = { x: 256 - 8, y: GROUND_Y - 16 - 48, hit: false, bumpT: 0, used: false };
+  state.bug = { x: 300, y: GROUND_Y - 16, vx: -0.9, alive: true, squished: false, squishT: 0 };
+  state.particles = [];
+  state.cardShown = false;
+  state.score = 0;
+  card.classList.remove('show');
+  replayBtn.classList.remove('show');
+  startPrompt.classList.remove('hide');
+  hudScore.textContent = '000000';
+  updateClock();
+}
+
+window.addEventListener('keydown', () => { if (state.phase === 'idle') startAnimation(); });
+document.getElementById('stage').addEventListener('click', e => {
+  if (e.target.closest('.back-btn') || e.target.closest('.replay-btn') || e.target.closest('.contact-card')) return;
+  if (state.phase === 'idle') startAnimation();
+});
+document.getElementById('stage').addEventListener('touchstart', e => {
+  if (e.target.closest('.back-btn') || e.target.closest('.replay-btn') || e.target.closest('.contact-card')) return;
+  if (state.phase === 'idle') { e.preventDefault(); startAnimation(); }
+}, { passive: false });
+replayBtn.addEventListener('click', resetAnimation);
+
+/* ---------- Update ---------- */
+function update(dt) {
+  state.t += dt;
+  const h = state.hero;
+  const b = state.block;
+  const bug = state.bug;
+
+  if (state.phase === 'idle') return;
+
+  if (state.phase === 'run') {
+    h.x += 1.6;
+    h.anim = 'run';
+    h.frame = Math.floor(state.t / 120) % 2;
+
+    if (bug.alive && !bug.squished) bug.x += bug.vx;
+
+    const dxBug = bug.x - (h.x + 8);
+    if (bug.alive && !bug.squished && dxBug < 30 && dxBug > 4) {
+      h.vy = -3.6;
+      state.phase = 'stompJump';
+    } else if (h.x > b.x - 26 && state.phase === 'run') {
+      state.phase = 'jump';
+      h.vy = -4.6;
+    }
+  }
+
+  if (state.phase === 'stompJump') {
+    h.x += 1.4;
+    h.vy += 0.22;
+    h.y += h.vy;
+    h.anim = 'jump';
+    if (bug.alive && !bug.squished) bug.x += bug.vx;
+
+    const heroFeet = h.y + 16;
+    const bugTop   = bug.y + 4;
+    const heroCx   = h.x + 8;
+    if (!bug.squished && bug.alive && h.vy >= 0 &&
+        heroFeet >= bugTop - 2 && heroFeet <= bugTop + 12 &&
+        Math.abs(heroCx - (bug.x + 8)) < 12) {
+      bug.squished = true;
+      bug.squishT  = 0;
+      bug.vx = 0;
+      h.vy = -3.0;
+      h.y  = bug.y - 12;
+      state.score += 100;
+      hudScore.textContent = String(state.score).padStart(6, '0');
+      for (let i = 0; i < 10; i++) {
+        state.particles.push({
+          x: bug.x + 8, y: bug.y + 8,
+          vx: (Math.random() - 0.5) * 2.6,
+          vy: -1.2 - Math.random() * 1.6,
+          life: 30,
+          color: i % 2 ? C.bugBody : '#fff',
+        });
+      }
+    }
+
+    if (h.y >= GROUND_Y - 16) {
+      h.y = GROUND_Y - 16;
+      h.vy = 0;
+      state.phase = 'run';
+    }
+  }
+
+  if (state.phase === 'jump') {
+    h.x += 1.0;
+    h.vy += 0.22;
+    h.y += h.vy;
+    h.anim = 'jump';
+
+    const headY      = h.y;
+    const blockBottom = b.y + 16;
+    const heroCenter  = h.x + 8;
+    if (!b.hit && h.vy < 0 &&
+        headY <= blockBottom + 1 &&
+        heroCenter > b.x - 2 && heroCenter < b.x + 18) {
+      b.hit   = true;
+      b.bumpT = 0;
+      h.vy    = 1.2;
+      for (let i = 0; i < 12; i++) {
+        state.particles.push({
+          x: b.x + 8, y: b.y + 4,
+          vx: (Math.random() - 0.5) * 3,
+          vy: -2 - Math.random() * 2,
+          life: 40,
+          color: i % 2 ? C.coin : '#fff',
+        });
+      }
+      state.score += 1000;
+      hudScore.textContent = String(state.score).padStart(6, '0');
+      setTimeout(() => {
+        if (!state.cardShown) {
+          card.classList.add('show');
+          state.cardShown = true;
+        }
+      }, 180);
+    }
+
+    if (h.y >= GROUND_Y - 16) {
+      h.y = GROUND_Y - 16;
+      h.vy = 0;
+      state.phase = 'settle';
+    }
+  }
+
+  if (state.phase === 'settle') {
+    h.x += 0.8;
+    h.anim = 'run';
+    h.frame = Math.floor(state.t / 120) % 2;
+    if (h.x > b.x + 8) {
+      h.anim = 'stand';
+      state.phase = 'done';
+      replayBtn.classList.add('show');
+    }
+  }
+
+  if (state.phase === 'done') h.anim = 'stand';
+
+  if (b.hit && !b.used) {
+    b.bumpT += dt;
+    const k = b.bumpT / 220;
+    b._yo = k <= 1 ? -Math.sin(k * Math.PI) * 8 : 0;
+    if (k > 1) b.used = true;
+  }
+
+  if (bug.squished) {
+    bug.squishT += dt;
+    if (bug.squishT > 800) bug.alive = false;
+  }
+
+  state.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.18; p.life -= 1; });
+  state.particles = state.particles.filter(p => p.life > 0);
+}
+
+/* ---------- Render ---------- */
+function render() {
+  ctx.fillStyle = C.sky;
+  ctx.fillRect(0, 0, W, H);
+
+  const cloudT = state.t * 0.01;
+  drawSprite(CLOUD, ((40  - cloudT * 4) % (W + 32) + W + 32) % (W + 32) - 32, 36, CLOUD_PAL);
+  drawSprite(CLOUD, ((220 - cloudT * 3) % (W + 32) + W + 32) % (W + 32) - 32, 60, CLOUD_PAL);
+  drawSprite(CLOUD, ((400 - cloudT * 5) % (W + 32) + W + 32) % (W + 32) - 32, 24, CLOUD_PAL);
+
+  drawHill(60,  GROUND_Y, 100);
+  drawHill(330, GROUND_Y, 80);
+  drawHill(180, GROUND_Y, 50);
+  drawHill(440, GROUND_Y, 60);
+
+  const b = state.block;
+  drawSprite(b.used ? BLOCK_USED : BLOCK, b.x, b.y + (b._yo || 0), b.used ? BLOCK_USED_PAL : BLOCK_PAL);
+
+  if (state.cardShown) {
+    drawSpark(b.x + 8,  b.y + 8  + (b._yo || 0), state.t);
+    drawSpark(b.x - 14, b.y + 4,                  state.t + 400);
+    drawSpark(b.x + 30, b.y + 6,                  state.t + 800);
+  }
+
+  drawPipe(W - 50, GROUND_Y - 32);
+
+  const bug = state.bug;
+  if (bug.alive && state.phase !== 'idle') {
+    if (bug.squished) {
+      const sx = bug.x, sy = bug.y + 12;
+      px(sx + 1, sy + 1, 14, 3, C.bugBodyD);
+      px(sx + 2, sy + 1, 12, 2, C.bugBody);
+      px(sx + 4, sy + 1, 1, 1, '#000');
+      px(sx + 11, sy + 1, 1, 1, '#000');
+    } else {
+      const wobble = Math.floor(state.t / 150) % 2;
+      drawSprite(BUG, bug.x, bug.y + wobble, BUG_PAL);
+    }
+  }
+
+  const h = state.hero;
+  if (state.phase !== 'idle') {
+    let grid = HERO_STAND;
+    if (h.anim === 'run')  grid = h.frame ? HERO_RUN : HERO_STAND;
+    if (h.anim === 'jump') grid = HERO_JUMP;
+    drawSprite(grid, Math.round(h.x), Math.round(h.y), HERO_PAL, h.facing < 0);
+  }
+
+  state.particles.forEach(p => px(p.x, p.y, 2, 2, p.color));
+
+  for (let x = 0; x < W; x += 16) {
+    drawSprite(BRICK, x, GROUND_Y,      BRICK_PAL);
+    drawSprite(BRICK, x, GROUND_Y + 16, BRICK_PAL);
+  }
+}
+
+let lastT = performance.now();
+function loop(now) {
+  const dt = Math.min(40, now - lastT);
+  lastT = now;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// no auto-start — waits for key or tap
+</script>
+</body>
+</html>

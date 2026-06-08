@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Case Studies · RohantOS v4</title>
+<!-- Open Graph (social sharing) -->
+<meta property="og:title" content="Case Studies — Rohant Chadha">
+<meta property="og:description" content="Selected work: Absolute Realty, Rent Flow, KB Foundation, PettyGPT.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Case Studies — Rohant Chadha">
+<meta name="twitter:description" content="Selected work: Absolute Realty, Rent Flow, KB Foundation, PettyGPT.">
+<meta name="twitter:image" content="og-image.png">
+
+  <link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+  #root { width: 100%; height: 100%; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script>
+/* Responsive page redirect — keeps URL in sync with viewport across the 1025px breakpoint */
+(function(){
+  function go(){ window.location.replace("case-studies-v4.html"); }
+  function check(){ if (window.innerWidth >= 1025) go(); }
+  check();
+  var t;
+  window.addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(check, 300);
+  });
+})();
+</script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- ══════════════════════════════════════ SHARED HOOKS ══ -->
+<script type="text/babel" data-presets="react">
+
+function useClock() {
+  const [now, setNow] = React.useState(() => new Date());
+  React.useEffect(() => { const t = setInterval(() => setNow(new Date()), 15000); return () => clearInterval(t); }, []);
+  const h12 = ((now.getHours() + 11) % 12) + 1;
+  return { hh: String(h12), mm: String(now.getMinutes()).padStart(2,'0'), ampm: now.getHours() >= 12 ? 'PM' : 'AM' };
+}
+
+function useVP() {
+  const [vp, setVp] = React.useState({ w: window.innerWidth, h: window.innerHeight });
+  React.useEffect(() => {
+    const fn = () => setVp({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, []);
+  return vp;
+}
+
+function useWindows(seed) {
+  const [wins, setWins] = React.useState(() => seed.map((w, i) => ({ ...w, z: i + 1, minimized: false })));
+  const [topZ, setTopZ] = React.useState(seed.length + 1);
+  const focus = React.useCallback(id => {
+    setWins(ws => { const w = ws.find(x => x.id === id); if (!w || (w.z === topZ && !w.minimized)) return ws; return ws.map(x => x.id === id ? { ...x, z: topZ + 1, minimized: false } : x); });
+    setTopZ(z => z + 1);
+  }, [topZ]);
+  const open = React.useCallback(win => {
+    setWins(ws => { const ex = ws.find(w => w.id === win.id); if (ex) return ws.map(w => w.id === win.id ? { ...w, z: topZ + 1, minimized: false, ...win } : w); return [...ws, { ...win, z: topZ + 1, minimized: false }]; });
+    setTopZ(z => z + 1);
+  }, [topZ]);
+  const close    = React.useCallback(id => setWins(ws => ws.filter(w => w.id !== id)), []);
+  const minimize = React.useCallback(id => setWins(ws => ws.map(w => w.id === id ? { ...w, minimized: true } : w)), []);
+  const move     = React.useCallback((id, x, y) => setWins(ws => ws.map(w => w.id === id ? { ...w, x, y } : w)), []);
+  return { wins, focus, open, close, minimize, move };
+}
+
+function useDraggable(ref, callbacks) {
+  // Keep a ref to latest values so the effect never needs to re-run
+  // (re-running on every focus/move would tear down the pointermove listener mid-drag)
+  const cb = React.useRef(callbacks);
+  cb.current = callbacks;
+
+  React.useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const handle = el.querySelector('[data-drag-handle]'); if (!handle) return;
+    let drag = null;
+
+    const down = e => {
+      if (e.button !== 0 || e.target.closest('[data-no-drag]')) return;
+      e.preventDefault(); e.stopPropagation();
+      cb.current.onStart && cb.current.onStart();
+      const r = el.getBoundingClientRect();
+      drag = { sx: e.clientX, sy: e.clientY,
+               ox: cb.current.x, oy: cb.current.y,
+               scale: (r.width / el.offsetWidth) || 1 };
+      window.addEventListener('pointermove', mv);
+      window.addEventListener('pointerup', up);
+    };
+
+    const mv = e => {
+      if (!drag) return;
+      const nx = Math.max(0,  Math.min(window.innerWidth  - 60, drag.ox + (e.clientX - drag.sx) / drag.scale));
+      const ny = Math.max(0,  Math.min(window.innerHeight - 50, drag.oy + (e.clientY - drag.sy) / drag.scale));
+      cb.current.onMove(nx, ny);
+    };
+
+    const up = () => {
+      drag = null;
+      window.removeEventListener('pointermove', mv);
+      window.removeEventListener('pointerup', up);
+    };
+
+    handle.addEventListener('pointerdown', down);
+    return () => {
+      handle.removeEventListener('pointerdown', down);
+      window.removeEventListener('pointermove', mv);
+      window.removeEventListener('pointerup', up);
+    };
+  }, []); // mount once — latest x/y/callbacks always read via cb.current
+}
+
+function useBoot() {
+  const [phase, setPhase] = React.useState('boot');
+  React.useEffect(() => { const t1 = setTimeout(() => setPhase('welcome'), 1400), t2 = setTimeout(() => setPhase('done'), 2400); return () => { clearTimeout(t1); clearTimeout(t2); }; }, []);
+  return phase;
+}
+
+Object.assign(window, { useClock, useVP, useWindows, useDraggable, useBoot });
+</script>
+
+<!-- ═══════════════════════════════════ MAC DESKTOP v4 ══ -->
+<script type="text/babel" data-presets="react">
+
+const T = {
+  chrome: '#e8e4d8', line: '#1a1a1a', paper: '#f5f1e8', ink: '#1a1a1a',
+  serif: '"Playfair Display","Times New Roman",serif',
+  mono:  '"VT323","Courier New",monospace',
+  ui:    '"Geneva","Lucida Grande",system-ui,sans-serif',
+};
+const stripeBar     = `repeating-linear-gradient(180deg,${T.line} 0 1px,transparent 1px 3px)`;
+const stripeBarThin = `repeating-linear-gradient(180deg,${T.line} 0 1px,transparent 1px 2px)`;
+
+const PROJECTS = [
+  { id:'absolute-realty', name:'Absolute Realty', kind:'Case Study',  tone:'sky',     size:'14.2 MB', modified:'Mar 14, 2026', blurb:'A property listings & lead-management tool rebuilt from the ground up. Clearer typography, faster filtering, and a saved-shortlist flow that respects how brokers actually work.', url:'mobile-absolute-realty.html' },
+  { id:'rent-flow',       name:'Rent Flow',        kind:'Case Study',  tone:'mustard', size:'8.1 MB',  modified:'Feb 02, 2026', blurb:'Rent collection and payment tracking for landlords with 1–20 properties. Replaced spreadsheets with a calm, scannable dashboard and gentle reminders.', url:'mobile-rentflow.html' },
+  { id:'pousse-le-rit',   name:'Pousse Le Rit',    kind:'Case Study',  tone:'rose',    size:'5.7 MB',  modified:'Nov 21, 2025', blurb:'Brand & product for a Paris-based pâtisserie. A warm, hand-set identity that felt both very old and very new — applied across packaging, signage, and a tiny ordering site.', comingSoon: true },
+  { id:'pettygpt',        name:'PettyGPT',          kind:'Side Project',tone:'peach',   size:'2.4 MB',  modified:'Sep 09, 2025', blurb:'A chatbot that answers any question with maximum passive-aggressive energy. Started as a joke, kept going. Mostly an exploration of voice and tone in conversational UI.', url:'pettygpt/pettygpt-mobile.html' },
+  { id:'kb-foundation',   name:'KB Foundation',     kind:'Case Study',  tone:'sage',    size:'11.6 MB', modified:'Jul 30, 2025', blurb:'Redesigning a Delhi-based NGO\'s website from charity appeal to skills platform. The move: make the homepage for students, not donors — lead with courses, not a donation ask.', url:'mobile-kb-foundation.html' },
+];
+
+const TONE = { peach:['#f4b896','#e89770'], mustard:['#e8c574','#d4a548'], sage:['#b8c9a0','#94a87a'], sky:['#a8c0d4','#7a9cb8'], rose:['#e4a8b4','#c87e8e'], cream:['#f0e4c8','#ddc898'] };
+const toneHex = (t, d) => (TONE[t]||TONE.cream)[d?1:0];
+
+// ─── Icons ───────────────────────────────────────────────
+function Icon({ kind, size = 32, fill }) {
+  const f = fill || T.paper, s = T.line;
+  if (kind === 'folder') return (
+    <svg width={size} height={size} viewBox="0 0 32 32" shapeRendering="crispEdges">
+      <path d="M2 8L12 8L14 10L30 10L30 26L2 26Z" fill={f} stroke={s} strokeWidth="1.2"/>
+      <line x1="4" y1="12" x2="8" y2="12" stroke={s} strokeWidth="0.8" opacity="0.5"/>
+    </svg>);
+  if (kind === 'computer') return (
+    <svg width={size} height={size} viewBox="0 0 32 32" shapeRendering="crispEdges">
+      <rect x="6" y="4" width="20" height="22" fill={f} stroke={s} strokeWidth="1.2"/>
+      <rect x="9" y="7" width="14" height="10" fill="#2d3a2a" stroke={s} strokeWidth="0.8"/>
+      <rect x="9"  y="19" width="3" height="2" fill={s}/>
+      <rect x="13" y="19" width="3" height="2" fill={s} opacity="0.4"/>
+      <rect x="20" y="19" width="3" height="2" fill={s} opacity="0.4"/>
+      <rect x="11" y="26" width="10" height="3" fill={f} stroke={s} strokeWidth="1.2"/>
+      <path d="M13 11 q3 2 6 0" fill="none" stroke="#d97757" strokeWidth="0.8"/>
+    </svg>);
+  if (kind === 'home') return (
+    <svg width={size} height={size} viewBox="0 0 32 32" shapeRendering="crispEdges">
+      <path d="M8 4L22 4L26 8L26 28L8 28Z" fill={f} stroke={s} strokeWidth="1.2"/>
+      <path d="M22 4L22 8L26 8" fill="none" stroke={s} strokeWidth="1.2"/>
+      <path d="M11 18L17 13L23 18" fill="none" stroke={s} strokeWidth="1"/>
+      <rect x="13" y="18" width="8" height="6" fill="none" stroke={s} strokeWidth="1"/>
+      <rect x="16" y="20" width="2" height="4" fill={s}/>
+    </svg>);
+  return null;
+}
+
+// ─── Menu bar ────────────────────────────────────────────
+function MenuBar({ onAbout, onAction, clock }) {
+  const [open, setOpen] = React.useState(null);
+  React.useEffect(() => {
+    if (!open) return;
+    const h = e => { if (!e.target.closest('[data-menubar]')) setOpen(null); };
+    window.addEventListener('pointerdown', h);
+    return () => window.removeEventListener('pointerdown', h);
+  }, [open]);
+
+  const MENUS = {
+    apple:   [ {label:'About RohantOS…',action:'about'},{sep:true},{label:'Alarm Clock',disabled:true,glyph:'⏰'},{label:'Calculator',disabled:true,glyph:'🧮'},{label:'Chooser',disabled:true},{label:'Note Pad',disabled:true},{label:'Scrapbook',disabled:true} ],
+    File:    [ {label:'New Folder',shortcut:'⌘N',disabled:true},{label:'Open',shortcut:'⌘O',action:'open-work'},{label:'Open Homepage',action:'open-home'},{label:'Close Window',shortcut:'⌘W',disabled:true},{sep:true},{label:'Get Info',shortcut:'⌘I',disabled:true},{label:'Print…',shortcut:'⌘P',disabled:true},{sep:true},{label:'Quit',shortcut:'⌘Q',disabled:true} ],
+    Edit:    [ {label:'Undo',shortcut:'⌘Z',disabled:true},{sep:true},{label:'Cut',shortcut:'⌘X',disabled:true},{label:'Copy',shortcut:'⌘C',disabled:true},{label:'Paste',shortcut:'⌘V',disabled:true},{label:'Clear',disabled:true},{sep:true},{label:'Select All',shortcut:'⌘A',disabled:true} ],
+    View:    [ {label:'by Small Icon',disabled:true},{label:'by Icon',check:true},{label:'by Name',disabled:true},{sep:true},{label:'Clean Up Window',disabled:true} ],
+    Special: [ {label:'Clean Up Desktop',disabled:true},{label:'Empty Trash…',disabled:true},{sep:true},{label:'Eject Disk',shortcut:'⌘E',disabled:true},{label:'Erase Disk…',disabled:true},{sep:true},{label:'Restart',action:'restart'},{label:'Shut Down',action:'shutdown'} ],
+  };
+  const LEFT = { apple:6, File:38, Edit:80, View:116, Special:158 };
+  const toggle = k => e => { e.stopPropagation(); /* menu dropdowns disabled on mobile */ };
+  const choose = it => { if (it.disabled) return; setOpen(null); if (it.action === 'about') onAbout(); else if (it.action) onAction(it.action); };
+
+  return (
+    <div data-menubar style={{ height:22, background:T.chrome, borderBottom:`1px solid ${T.line}`, display:'flex', alignItems:'center', paddingLeft:10, paddingRight:10, fontFamily:T.ui, fontSize:13, color:T.ink, position:'relative', zIndex:1000, boxShadow:'0 1px 0 rgba(0,0,0,0.15)', flexShrink:0 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:18, flex:1 }}>
+        <div data-no-drag onClick={toggle('apple')} style={{ cursor:'pointer', padding:'0 8px', height:22, display:'flex', alignItems:'center', background:open==='apple'?T.line:'transparent', color:open==='apple'?'#fff':T.ink }}>
+          <span style={{ fontFamily:T.serif, fontStyle:'italic', fontSize:15, fontWeight:700 }}>ℜ</span>
+        </div>
+        {['File','Edit','View','Special'].map(k => (
+          <div key={k} data-no-drag onClick={toggle(k)} style={{ cursor:'pointer', padding:'0 6px', height:22, display:'flex', alignItems:'center', background:open===k?T.line:'transparent', color:open===k?'#fff':T.ink, fontWeight:k==='File'?600:400 }}>{k}</div>
+        ))}
+      </div>
+      <div style={{ display:'flex', alignItems:'center', gap:10, fontSize:12 }}>
+        <span style={{ opacity:0.7 }}>?</span>
+        <span style={{ fontVariantNumeric:'tabular-nums' }}>{clock.hh}:{clock.mm} {clock.ampm}</span>
+      </div>
+      {open && (
+        <div onClick={e=>e.stopPropagation()} style={{ position:'absolute', top:22, left:LEFT[open], minWidth:200, background:'#fff', border:`1px solid ${T.line}`, boxShadow:`2px 2px 0 0 ${T.line}`, fontFamily:T.ui, fontSize:13, padding:'4px 0', zIndex:2000 }}>
+          {MENUS[open].map((it,i) => it.sep
+            ? <div key={i} style={{ borderTop:`1px solid ${T.line}`, margin:'4px 0', opacity:0.5 }}/>
+            : <MenuItem key={i} {...it} onClick={() => choose(it)}/>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MenuItem({ label, shortcut, onClick, disabled, glyph, check }) {
+  const [h, setH] = React.useState(false);
+  return (
+    <div onClick={disabled?undefined:onClick} onMouseEnter={()=>!disabled&&setH(true)} onMouseLeave={()=>setH(false)}
+      style={{ padding:'2px 14px 2px 22px', position:'relative', display:'flex', justifyContent:'space-between', cursor:disabled?'default':'pointer', background:h?T.line:'transparent', color:disabled?'#a8a298':h?'#fff':T.ink }}>
+      {check && <span style={{ position:'absolute', left:8, top:2, fontSize:11 }}>✓</span>}
+      {glyph && !check && <span style={{ position:'absolute', left:8, top:2, fontSize:11 }}>{glyph}</span>}
+      <span>{label}</span>
+      {shortcut && <span style={{ opacity:disabled?0.5:0.85, marginLeft:12 }}>{shortcut}</span>}
+    </div>
+  );
+}
+
+// ─── Window chrome ───────────────────────────────────────
+function MacWindow({ win, focused, onFocus, onClose, onMinimize, onMove, children }) {
+  const ref = React.useRef(null);
+  useDraggable(ref, { x:win.x, y:win.y, onMove, onStart:onFocus });
+  return (
+    <div ref={ref} onMouseDown={onFocus} style={{ position:'absolute', left:win.x, top:win.y, width:win.w, background:'#fff', border:`1px solid ${T.line}`, boxShadow:`2px 2px 0 0 ${T.line},0 6px 18px rgba(0,0,0,0.18)`, zIndex:win.z, fontFamily:T.ui, pointerEvents:'auto' }}>
+      <div data-drag-handle style={{ height:19, position:'relative', borderBottom:`1px solid ${T.line}`, background:focused?stripeBar:T.chrome, display:'flex', alignItems:'center', justifyContent:'center', cursor:'grab', userSelect:'none' }}>
+        {focused && <>
+          <div data-no-drag onClick={onClose} onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute', left:8, top:4, width:11, height:11, background:'#fff', border:`1px solid ${T.line}`, cursor:'pointer' }}/>
+          <div data-no-drag onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute', right:26, top:4, width:11, height:11, background:'#fff', border:`1px solid ${T.line}`, cursor:'pointer', boxShadow:`inset 0 0 0 2px ${T.line},inset 0 0 0 3px #fff` }}/>
+          <div data-no-drag onClick={onMinimize} onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute', right:8, top:4, width:11, height:11, background:'#fff', border:`1px solid ${T.line}`, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ width:5, height:5, background:T.line }}/>
+          </div>
+        </>}
+        <div style={{ background:focused?T.chrome:'transparent', padding:'0 10px', fontSize:12, fontWeight:600, color:T.ink }}>{win.title}</div>
+      </div>
+      <div style={{ position:'relative' }}>
+        {children}
+        <div style={{ position:'absolute', right:0, bottom:0, width:14, height:14, background:'#fff', borderLeft:`1px solid ${T.line}`, borderTop:`1px solid ${T.line}`, backgroundImage:`repeating-linear-gradient(135deg,transparent 0 2px,${T.line} 2px 3px)`, pointerEvents:'none' }}/>
+      </div>
+    </div>
+  );
+}
+
+// ─── Explorer ────────────────────────────────────────────
+function Explorer({ onOpenProject }) {
+  const [view, setView] = React.useState('list');
+  const [sel,  setSel]  = React.useState(null);
+  const selP = sel ? PROJECTS.find(p => p.id === sel) : null;
+  return (
+    <div style={{ background:'#fff', fontFamily:T.ui, width:'100%' }} onClick={() => setSel(null)}>
+      {/* info */}
+      <div style={{ padding:'3px 10px',borderBottom:`1px solid ${T.line}`,fontSize:10,display:'flex',gap:12,color:T.ink,background:T.paper }}>
+        <span><b>{PROJECTS.length}</b> items</span>
+      </div>
+      {/* body — sidebar removed for mobile; list view only */}
+      <div style={{ display:'flex' }}>
+        <div style={{ flex:1,background:'#fff',display:'flex',flexDirection:'column',minWidth:0 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ padding:'14px 12px',display:'grid',gridTemplateColumns:'repeat(2,1fr)',rowGap:14,columnGap:8 }}>
+            {PROJECTS.map(p => <FolderIcon key={p.id} project={p} selected={sel===p.id} onSelect={()=>setSel(p.id)} onOpen={()=>onOpenProject(p)}/>)}
+          </div>
+        </div>
+      </div>
+      {/* status */}
+      <div style={{ borderTop:`1px solid ${T.line}`,padding:'3px 10px',color:T.ink,background:T.chrome,display:'flex',gap:14,fontFamily:T.mono,fontSize:11,minHeight:20 }}>
+      </div>
+    </div>
+  );
+}
+
+function SR({ children, active, onClick }) {
+  const [h, setH] = React.useState(false);
+  return <div onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{ padding:'2px 3px',cursor:onClick?'pointer':'default',background:active?T.line:(h&&onClick?'rgba(26,26,26,0.08)':'transparent'),color:active?'#fff':T.ink,fontSize:10,lineHeight:1.4 }}>{children}</div>;
+}
+
+function ListView({ projects, selected, onSelect, onOpen }) {
+  return (
+    <div style={{ fontFamily:T.ui, fontSize:11 }}>
+      <div style={{ display:'grid',gridTemplateColumns:'18px 1fr',background:stripeBarThin,borderBottom:`1px solid ${T.line}`,padding:'2px 0' }}>
+        {[' ','Name'].map((c,i) => <div key={i} style={{ background:T.chrome,padding:'2px 6px',fontWeight:600,fontSize:10 }}>{c}</div>)}
+      </div>
+      {projects.map((p,i) => {
+        const s = selected === p.id;
+        return (
+          <div key={p.id} onClick={e=>{e.stopPropagation();onSelect(p.id);}} onDoubleClick={()=>onOpen(p)} onPointerDown={e=>e.stopPropagation()}
+            style={{ display:'grid',gridTemplateColumns:'18px 1fr',padding:'3px 0',cursor:'pointer',userSelect:'none',background:s?T.line:(i%2?'#fafafa':'#fff'),color:s?'#fff':T.ink,borderBottom:'1px solid #eee',alignItems:'center',fontSize:10 }}>
+            <div style={{ paddingLeft:4,filter:s?'invert(1)':'none' }}><Icon kind="folder" size={12}/></div>
+            <div style={{ paddingLeft:4,fontWeight:500 }}>{p.name}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function FolderIcon({ project, selected, onSelect, onOpen }) {
+  return (
+    <div onPointerDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation();onOpen();}}
+      style={{ display:'flex',flexDirection:'column',alignItems:'center',cursor:'pointer',userSelect:'none',padding:3 }}>
+      <div style={{ filter:selected?'invert(1)':'none',padding:2 }}><Icon kind="folder" size={36}/></div>
+      <div style={{ marginTop:3,fontSize:10,fontFamily:T.ui,textAlign:'center',lineHeight:1.15,background:selected?T.line:'transparent',color:selected?'#fff':T.ink,padding:'1px 3px',maxWidth:80 }}>{project.name}</div>
+    </div>
+  );
+}
+
+// ─── About dialog ────────────────────────────────────────
+function AboutDialog({ win, focused, onFocus, onClose, onMinimize, onMove }) {
+  const ref = React.useRef(null);
+  useDraggable(ref, { x:win.x, y:win.y, onMove, onStart:onFocus });
+  return (
+    <div ref={ref} onMouseDown={onFocus} style={{ position:'absolute',left:win.x,top:win.y,width:370,background:'#fff',border:`1px solid ${T.line}`,boxShadow:`2px 2px 0 0 ${T.line},0 8px 26px rgba(0,0,0,0.22)`,zIndex:win.z,fontFamily:T.ui,pointerEvents:'auto' }}>
+      <div data-drag-handle style={{ height:22,position:'relative',borderBottom:`1px solid ${T.line}`,background:focused?stripeBarThin:T.chrome,display:'flex',alignItems:'center',justifyContent:'center',cursor:'grab' }}>
+        {focused && <>
+          <div data-no-drag onClick={onClose} onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute',left:8,top:5,width:11,height:11,background:'#fff',border:`1px solid ${T.line}`,cursor:'pointer' }}/>
+          <div data-no-drag onClick={onMinimize} onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute',right:8,top:5,width:11,height:11,background:'#fff',border:`1px solid ${T.line}`,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
+            <div style={{ width:5,height:5,background:T.line }}/>
+          </div>
+        </>}
+        <div style={{ background:focused?T.chrome:'transparent',padding:'0 14px',fontSize:11,fontWeight:600,letterSpacing:1,textTransform:'uppercase' }}>About This Designer</div>
+      </div>
+      <div style={{ padding:'14px 14px 10px' }}>
+        <div style={{ background:'linear-gradient(180deg,#2d3a2a 0%,#3d4d36 70%,#4a5640 100%)',height:110,border:`1px solid ${T.line}`,position:'relative',overflow:'hidden' }}>
+          <div style={{ position:'absolute',top:16,right:24,width:22,height:22,background:'#f5d896',borderRadius:'50%',border:`1px solid ${T.line}`,boxShadow:'0 0 18px rgba(245,216,150,0.5)' }}/>
+          {[[14,36],[25,72],[42,108]].map(([top,left],i)=><div key={i} style={{ position:'absolute',top,left,width:2,height:2,background:'#fef4e0' }}/>)}
+          <svg viewBox="0 0 342 70" preserveAspectRatio="none" style={{ position:'absolute',bottom:0,left:0,width:'100%',height:70 }}>
+            <polygon points="0,70 52,26 100,48 154,16 208,42 262,26 342,56 342,70" fill="#d97757" stroke="#1a1a1a" strokeWidth="1"/>
+            <polygon points="0,70 36,48 82,58 144,38 200,54 262,46 342,64 342,70" fill="#a8503c" stroke="#1a1a1a" strokeWidth="1"/>
+          </svg>
+        </div>
+      </div>
+      <div style={{ padding:'0 18px' }}>
+        <h1 style={{ fontFamily:T.serif,fontSize:24,fontWeight:700,margin:'2px 0 4px',letterSpacing:-0.6,lineHeight:1.1 }}>RohantOS <span style={{ fontStyle:'italic',fontWeight:400,opacity:0.7 }}>v7.0.1</span></h1>
+        <p style={{ fontSize:12,lineHeight:1.5,margin:'0 0 12px',color:'#3a3530' }}>A retro shell for new ideas. Classic interface, modern thinking — built in New Delhi by a designer who likes products and the people who use them.</p>
+      </div>
+      <div style={{ margin:'0 18px',borderTop:`1px solid ${T.line}`,borderBottom:`1px solid ${T.line}`,padding:'8px 0',fontFamily:T.mono,fontSize:12,color:T.ink,lineHeight:1.5,display:'grid',gridTemplateColumns:'1fr 1fr',columnGap:14,rowGap:5 }}>
+        <div><span style={{ opacity:0.55 }}>OPERATOR</span><br/>Rohant, N.D.</div>
+        <div><span style={{ opacity:0.55 }}>LOCATION</span><br/>New Delhi · IN</div>
+        <div><span style={{ opacity:0.55 }}>PRACTICE</span><br/>Product Design + PM</div>
+        <div><span style={{ opacity:0.55 }}>UPTIME</span><br/>Since 2018, conservatively</div>
+      </div>
+      <div style={{ padding:'12px 18px 16px',display:'flex',alignItems:'center',justifyContent:'space-between' }}>
+        <div style={{ fontSize:11,opacity:0.6,fontFamily:T.mono }}>© 2026 — all warmth reserved</div>
+        <button data-no-drag onClick={e=>e.stopPropagation()} onMouseDown={e=>e.stopPropagation()} style={{ padding:'4px 18px',fontSize:11,fontFamily:'inherit',background:T.line,color:'#fff',border:`1.5px solid ${T.line}`,borderRadius:12,boxShadow:`1.5px 1.5px 0 0 ${T.line}`,cursor:'pointer',fontWeight:700,letterSpacing:0.3 }}>Read More →</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Case stub ───────────────────────────────────────────
+function CaseStub({ project }) {
+  if (project.comingSoon) {
+    return (
+      <div style={{ display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:240,padding:'24px',textAlign:'center' }}>
+        <div style={{ fontFamily:T.serif,fontSize:26,fontWeight:700,letterSpacing:-0.5,color:T.ink,marginBottom:10 }}>Coming Soon</div>
+        <div style={{ fontFamily:T.mono,fontSize:11,color:'#666' }}>Case study in progress. Check back later.</div>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <div style={{ background:`linear-gradient(135deg,${toneHex(project.tone)} 0%,${toneHex(project.tone,true)} 100%)`,height:90,position:'relative',borderBottom:`1px solid ${T.line}`,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden' }}>
+        <div style={{ position:'absolute',inset:0,opacity:0.3,background:'repeating-linear-gradient(45deg,transparent 0 8px,rgba(0,0,0,0.1) 8px 9px)' }}/>
+        <div style={{ fontFamily:T.serif,fontSize:22,fontWeight:700,letterSpacing:-0.5,color:T.ink,textShadow:'1px 1px 0 rgba(255,255,255,0.3)',textAlign:'center',padding:'0 20px' }}>{project.name}</div>
+      </div>
+      <div style={{ padding:14,fontSize:11,lineHeight:1.5 }}>
+        <div style={{ display:'flex',gap:10,marginBottom:8,fontFamily:T.mono,fontSize:10,color:'#666' }}>
+          <span><b>KIND</b> — {project.kind}</span><span><b>SIZE</b> — {project.size}</span><span><b>MODIFIED</b> — {project.modified}</span>
+        </div>
+        <p style={{ margin:'0 0 10px',color:T.ink,fontSize:12 }}>{project.blurb}</p>
+        <div style={{ padding:8,border:`1px dashed ${T.line}`,background:'#faf7ef',fontFamily:T.mono,fontSize:10,color:'#666' }}>Case study content coming soon.</div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Homepage ────────────────────────────────────────────
+function HomepageDialog({ win, focused, onFocus, onClose, onMinimize, onMove }) {
+  const ref = React.useRef(null);
+  useDraggable(ref, { x:win.x, y:win.y, onMove, onStart:onFocus });
+  return (
+    <div ref={ref} onMouseDown={onFocus} style={{ position:'absolute',left:win.x,top:win.y,width:300,background:'#fff',border:`1px solid ${T.line}`,boxShadow:`2px 2px 0 0 ${T.line},0 6px 18px rgba(0,0,0,0.18)`,zIndex:win.z,fontFamily:T.ui,pointerEvents:'auto' }}>
+      <div data-drag-handle style={{ height:19,position:'relative',borderBottom:`1px solid ${T.line}`,background:focused?stripeBar:T.chrome,display:'flex',alignItems:'center',justifyContent:'center',cursor:'grab',userSelect:'none' }}>
+        {focused && <>
+          <div data-no-drag onClick={onClose} onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute',left:8,top:4,width:11,height:11,background:'#fff',border:`1px solid ${T.line}`,cursor:'pointer' }}/>
+          <div data-no-drag onClick={onMinimize} onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute',right:8,top:4,width:11,height:11,background:'#fff',border:`1px solid ${T.line}`,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
+            <div style={{ width:5,height:5,background:T.line }}/>
+          </div>
+        </>}
+        <div style={{ background:focused?T.chrome:'transparent',padding:'0 10px',fontSize:12,fontWeight:600 }}>Homepage</div>
+      </div>
+      <div style={{ padding:16,fontSize:12,lineHeight:1.5 }}>
+        <div style={{ fontFamily:T.serif,fontSize:18,fontWeight:700,letterSpacing:-0.4,marginBottom:8 }}>← Back to the desk</div>
+        <p style={{ margin:'0 0 8px',color:'#3a3530' }}>You're already on the homepage — this is the desk.</p>
+        <p style={{ margin:0,fontFamily:T.mono,fontSize:11,color:'#666' }}>(In production, routes to <span style={{ background:'#fef4a8',padding:'0 3px' }}>/</span>.)</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Desktop icon (draggable) ────────────────────────────
+function DesktopIcon({ icon, selected, onSelect, onMove, onActivate }) {
+  const ref = React.useRef(null);
+  const sr  = React.useRef({ icon, onMove, onSelect, onActivate });
+  sr.current = { icon, onMove, onSelect, onActivate };
+  React.useEffect(() => {
+    const el = ref.current; if (!el) return;
+    let drag = null;
+    const down = e => {
+      if (e.button !== 0) return;
+      e.stopPropagation(); e.preventDefault(); sr.current.onSelect();
+      const host = el.closest('[data-os-root]');
+      const r = host.getBoundingClientRect();
+      drag = { sx:e.clientX,sy:e.clientY,ox:sr.current.icon.x,oy:sr.current.icon.y,scale:(r.width/host.offsetWidth)||1,moved:false,lastAt:el._lastAt||0 };
+      window.addEventListener('pointermove',mv); window.addEventListener('pointerup',up);
+    };
+    const mv = e => {
+      if (!drag) return;
+      const dx=(e.clientX-drag.sx)/drag.scale,dy=(e.clientY-drag.sy)/drag.scale;
+      if (!drag.moved&&Math.hypot(dx,dy)>4) drag.moved=true;
+      if (drag.moved) sr.current.onMove(Math.max(8,Math.min(window.innerWidth-80,drag.ox+dx)), Math.max(28,Math.min(window.innerHeight-60,drag.oy+dy)));
+    };
+    const up = () => {
+      if (!drag) return;
+      const now=Date.now();
+      if (!drag.moved){const{icon:ic,onActivate:act}=sr.current;if(ic.singleClick||now-drag.lastAt<400)act();el._lastAt=now;}
+      drag=null;window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);
+    };
+    el.addEventListener('pointerdown',down);
+    return ()=>{el.removeEventListener('pointerdown',down);window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);};
+  }, []);
+  return (
+    <div ref={ref} title={icon.tooltip} style={{ position:'absolute',left:icon.x,top:icon.y,display:'flex',flexDirection:'column',alignItems:'center',width:72,cursor:'pointer',userSelect:'none',zIndex:40,pointerEvents:'auto' }}>
+      <div style={{ filter:selected?'invert(1)':'drop-shadow(1px 1px 0 rgba(0,0,0,0.45))',padding:2 }}>
+        <Icon kind={icon.kind} size={40} fill={icon.fill}/>
+      </div>
+      <div style={{ marginTop:3,fontSize:10,fontFamily:T.ui,textAlign:'center',lineHeight:1.15,background:selected?T.line:'rgba(255,250,235,0.88)',color:selected?'#fff':T.ink,padding:'1px 4px',boxShadow:selected?'none':'0 1px 0 rgba(0,0,0,0.14)' }}>{icon.label}</div>
+    </div>
+  );
+}
+
+
+// ─── Boot ────────────────────────────────────────────────
+function Boot({ phase }) {
+  if (phase==='done') return null;
+  return (
+    <div style={{ position:'absolute',inset:0,background:'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:24,zIndex:9999,opacity:phase==='welcome'?0:1,transition:'opacity 0.6s',pointerEvents:phase==='welcome'?'none':'auto' }}>
+      <svg width="64" height="64" viewBox="0 0 72 72">
+        <rect x="8" y="12" width="56" height="44" fill="#d4c4a8" stroke="#fff" strokeWidth="2"/>
+        <rect x="12" y="16" width="48" height="32" fill="#2d3a2a"/>
+        <rect x="28" y="56" width="16" height="6" fill="#d4c4a8" stroke="#fff" strokeWidth="2"/>
+        <polygon points="20,44 32,24 40,36 48,28 56,44" fill="#d97757"/>
+        <text x="36" y="38" textAnchor="middle" fontFamily="Playfair Display,serif" fontStyle="italic" fontSize="12" fill="#f5f1e8">R</text>
+      </svg>
+      <div style={{ fontFamily:T.serif,color:'#f5f1e8',fontSize:16,letterSpacing:2,fontWeight:500 }}>Welcome to RohantOS</div>
+    </div>
+  );
+}
+
+function macCursor() {
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='16' height='22'><path d='M1 1 L1 16 L5 12 L8 20 L10 19 L7 11 L13 11 Z' fill='white' stroke='black' stroke-width='1.4' stroke-linejoin='miter'/></svg>`;
+  return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 1 1,default`;
+}
+
+// ─── Root ────────────────────────────────────────────────
+function MacDesktop() {
+  const phase = useBoot();
+  const clock = useClock();
+  const vp    = useVP();   // live viewport dimensions
+
+  // Icons anchored to right edge, recalculate when vp changes
+  const [icons, setIcons] = React.useState(() => [
+    { id:'work',   kind:'folder',   label:'Work',       fill:'#e8d5b7', tooltip:'Tap to open Work',              action:'work',     x: window.innerWidth-96, y:148, singleClick:true },
+    { id:'home',   kind:'home',     label:'Homepage',   fill:T.paper,   tooltip:'Tap to open Homepage',          action:'homepage', x: window.innerWidth-96, y:248, singleClick:true },
+  ]);
+
+  // Keep icons pinned to right edge on resize
+  const prevVpW = React.useRef(window.innerWidth);
+  React.useEffect(() => {
+    const delta = vp.w - prevVpW.current;
+    if (delta !== 0) {
+      setIcons(arr => arr.map(ic => ({ ...ic, x: ic.x + delta })));
+      prevVpW.current = vp.w;
+    }
+  }, [vp.w]);
+
+  // Windows — Work window auto-opens on load (About removed from initial seed)
+  const { wins, focus, open, close, minimize, move } = useWindows([
+    { id:'explorer', type:'explorer', title:'Work', x:40, y:42, w:Math.min(550, window.innerWidth*0.43), h:Math.min(720, window.innerHeight-100) },
+  ]);
+
+  const openAbout    = () => open({ id:'about',    type:'about',    title:'About This Designer', x:Math.max(380,vp.w-476), y:68, w:370, h:400 });
+  const openWork     = () => open({ id:'explorer', type:'explorer', title:'Work',               x:40,                     y:42, w:Math.min(550,vp.w*0.43), h:Math.min(720, vp.h-100) });
+  const openHomepage = () => open({ id:'homepage', type:'homepage', title:'Homepage',            x:Math.round(vp.w/2-150),y:Math.round(vp.h/2-100), w:300, h:200 });
+  const openProject  = p  => { if(p.url){ window.location.href = p.url; return; } open({ id:`case-${p.id}`, type:'case', project:p, title:p.name, x:160+Math.random()*160, y:90+Math.random()*120, w:390, h:300 }); };
+
+  const focusedId = wins.reduce((acc,w)=>(!acc||w.z>acc.z?w:acc),null)?.id;
+
+  const activate = id => {
+    const ic=icons.find(x=>x.id===id); if(!ic) return;
+    if(ic.action==='about') openAbout();
+    else if(ic.action==='work') openWork();
+    else if(ic.action==='homepage') { sessionStorage.setItem('skipSplash','1'); window.location.href='index.html#/desk'; }
+  };
+
+  return (
+    <div data-os-root onClick={()=>{}} onContextMenu={e=>e.preventDefault()}
+      style={{ position:'relative',width:'100vw',height:'100vh',overflow:'hidden',cursor:macCursor(),fontFamily:T.ui,background:'#000',display:'flex',flexDirection:'column' }}>
+
+      <div style={{ position:'absolute',inset:0,zIndex:0,backgroundImage:"url('pixel_dog.jpeg')",backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat' }}/>
+
+      {/* menu bar */}
+      <div style={{ position:'relative',zIndex:1000,flexShrink:0 }}>
+        <MenuBar onAbout={openAbout} onAction={a=>{if(a==='open-work')openWork();else if(a==='open-home')openHomepage();}} clock={clock}/>
+      </div>
+
+      {/* desktop area */}
+      <div style={{ position:'relative',flex:1,overflow:'hidden' }}>
+
+        {/* desktop icons */}
+        {icons.map(ic=>(
+          <DesktopIcon key={ic.id} icon={ic} selected={false}
+            onSelect={()=>{}}
+            onMove={(x,y)=>setIcons(arr=>arr.map(it=>it.id===ic.id?{...it,x,y}:it))}
+            onActivate={()=>activate(ic.id)}/>
+        ))}
+
+        {/* sticky note */}
+        <div style={{ position:'absolute',left:52,bottom:'18%',width:260,padding:'20px 22px 28px',background:'#fef4a8',color:'#5a4a2a',fontFamily:'"Caveat","Marker Felt","Segoe Print",cursive',fontSize:22,lineHeight:1.35,transform:'rotate(-3deg)',boxShadow:'4px 5px 0 rgba(0,0,0,0.25),0 2px 4px rgba(0,0,0,0.15)',zIndex:4 }}>
+          click any folder to open a case study. coffee's cold, ideas aren't.
+          <div style={{ marginTop:8,fontSize:18,opacity:0.7 }}>— R.</div>
+        </div>
+
+        {/* windows */}
+        <div style={{ position:'absolute',inset:0,pointerEvents:'none',zIndex:50 }}>
+          {wins.filter(w=>!w.minimized).map(w=>{
+            const focused=w.id===focusedId;
+            const fp={ key:w.id,win:w,focused,onFocus:()=>focus(w.id),onClose:()=>close(w.id),onMinimize:()=>minimize(w.id),onMove:(x,y)=>move(w.id,x,y) };
+            if(w.type==='explorer') return <MacWindow {...fp}><Explorer onOpenProject={openProject}/></MacWindow>;
+            if(w.type==='about')    return <AboutDialog {...fp}/>;
+            if(w.type==='homepage') return <HomepageDialog {...fp}/>;
+            if(w.type==='case')     return <MacWindow {...fp}><CaseStub project={w.project}/></MacWindow>;
+            return null;
+          })}
+        </div>
+
+        {/* minimised tabs */}
+        <div style={{ position:'absolute',bottom:8,left:240,right:240,display:'flex',gap:8,flexWrap:'wrap',pointerEvents:'none',zIndex:60 }}>
+          {wins.filter(w=>w.minimized).map(w=>(
+            <button key={w.id} onClick={()=>focus(w.id)} style={{ pointerEvents:'auto',padding:'3px 10px',background:T.chrome,border:`1px solid ${T.line}`,boxShadow:`1.5px 1.5px 0 0 ${T.line}`,fontFamily:T.ui,fontSize:10,cursor:'pointer' }}>{w.title}</button>
+          ))}
+        </div>
+      </div>
+
+      <Boot phase={phase}/>
+
+      {/* CRT scanlines */}
+      <div style={{ position:'absolute',inset:0,pointerEvents:'none',background:'repeating-linear-gradient(0deg,rgba(0,0,0,0.05) 0 1px,transparent 1px 3px)',mixBlendMode:'multiply',zIndex:9998 }}/>
+    </div>
+  );
+}
+
+Object.assign(window, { MacDesktop });
+</script>
+
+<!-- ══════════════════════════════════════════════ APP ══ -->
+<script type="text/babel" data-presets="react">
+function App() { return <MacDesktop wallpaper="sketch"/>; }
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RentFlow 2.1 — I rebuilt my own design with AI</title>
+<!-- Open Graph (social sharing) -->
+<meta property="og:title" content="RentFlow — Case Study by Rohant Chadha">
+<meta property="og:description" content="Rent collection and payment tracking for landlords, redesigned.">
+<meta property="og:image" content="../../../og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RentFlow — Case Study by Rohant Chadha">
+<meta name="twitter:description" content="Rent collection and payment tracking for landlords, redesigned.">
+<meta name="twitter:image" content="../../../og-image.png">
+
+  <link rel="icon" type="image/png" href="../../../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style-v21.css" />
+<script>
+/* Responsive page redirect — keeps URL in sync with viewport across the 1025px breakpoint */
+(function(){
+  function go(){ window.location.replace("../../../mobile-rentflow.html"); }
+  function check(){ if (window.innerWidth < 1025) go(); }
+  check();
+  var t;
+  window.addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(check, 300);
+  });
+})();
+</script>
+</head>
+<body>
+
+<!-- LEFT VERTICAL NAV -->
+<aside class="lnav" aria-label="Section navigation">
+  <div class="brand">
+    <span class="dot"></span>
+    <span>Rent Flow</span>
+    <span class="sep">·</span>
+    <span class="meta">Case study</span>
+  </div>
+  <nav class="lnav-list" id="lnav">
+    <a class="lnav-item is-active" href="#hero">Introduction</a>
+    <a class="lnav-item" href="#setup">The setup</a>
+    <a class="lnav-item" href="#toolkit">Toolkit</a>
+    <a class="lnav-item" href="#onboarding">Onboarding</a>
+    <a class="lnav-item" href="#dashboard">Dashboard</a>
+    <a class="lnav-item" href="#splits">Splits</a>
+    <a class="lnav-item" href="#payments">Payments</a>
+    <a class="lnav-item" href="#property-info">Property info</a>
+    <a class="lnav-item" href="#whatsapp">Landlord</a>
+    <a class="lnav-item" href="#cut-add">Cut &amp; added</a>
+    <a class="lnav-item" href="#india">India context</a>
+    <a class="lnav-item" href="#shift">Visual shift</a>
+    <a class="lnav-item" href="#ai-vs-me">AI vs me</a>
+    <a class="lnav-item" href="#learnings">Learnings</a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" id="hero" data-screen-label="01 Hero">
+  <div class="shimmer"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">A year apart · Two designs of the same app</div>
+    <div class="hero-splash reveal">
+      <video class="splash-video" autoplay muted playsinline>
+        <source src="img2/splash.mp4" type="video/mp4">
+      </video>
+    </div>
+    <h1 class="hero-h1">I rebuilt my own design <span class="grad-text">with AI.</span></h1>
+    <p class="hero-sub">In 2025, I re-designed RentFlow for my 10K Designers bootcamp project. Figma, wireframes, the whole rite of passage. In 2026, I rebuilt it without a single wireframe.</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="k">Time</div>
+        <div class="v"><span>2 wk</span><span class="arr">→</span><span class="grad-text">1 wk</span></div>
+        <div class="note">Bootcamp build vs AI rebuild</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">Onboarding</div>
+        <div class="v"><span>18</span><span class="arr">→</span><span class="grad-text">10</span></div>
+        <div class="note">Screens to first dashboard</div>
+      </div>
+      <div class="hero-stat">
+        <div class="k">Wireframes</div>
+        <div class="v"><span class="grad-text">0</span></div>
+        <div class="note">Replaced by hi-fi prompting</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SETUP -->
+<section id="setup" data-screen-label="02 The setup">
+  <div class="hero-scroll-wrap">
+    <div class="scroll-row new" id="hero-new">
+      <div class="row-tag">New <span class="yr">2026</span></div>
+      <div class="scroll-track left">
+        <div class="item"><img src="../../Final%20New%20Screens/1%20Welcome%20Screen.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/2%20welcome%20screen.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/3%20Welcome%20Screen.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/4%20Sign%20Up.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5%20OTP.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5.1%20OTP%20Error.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5.2%20Login.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5.3%20Login%20code.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/6%20Property%20Code.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/6.1%20Property%20Code%20Error.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/7.Property%20Page.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/8%20Name.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/9.%20Confirmation.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/10%20Dashboard%20Due.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/10.1%20Dashboard%20overdue.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/10.2%20Dashboard%20Paid.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/11%20Payments.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/12%20Splits.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/12.1%20Splits%20Change.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/13%20Profile.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/14%20Property%20Ingo.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/15%20Landlord%20Info.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/15.1%20Landlord%20Call.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/16%20Logout.png" alt=""></div>
+        <!-- dup -->
+        <div class="item"><img src="../../Final%20New%20Screens/1%20Welcome%20Screen.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/2%20welcome%20screen.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/3%20Welcome%20Screen.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/4%20Sign%20Up.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5%20OTP.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5.1%20OTP%20Error.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5.2%20Login.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/5.3%20Login%20code.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/6%20Property%20Code.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/6.1%20Property%20Code%20Error.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/7.Property%20Page.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/8%20Name.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/9.%20Confirmation.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/10%20Dashboard%20Due.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/10.1%20Dashboard%20overdue.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/10.2%20Dashboard%20Paid.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/11%20Payments.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/12%20Splits.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/12.1%20Splits%20Change.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/13%20Profile.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/14%20Property%20Ingo.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/15%20Landlord%20Info.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/15.1%20Landlord%20Call.png" alt=""></div>
+        <div class="item"><img src="../../Final%20New%20Screens/16%20Logout.png" alt=""></div>
+      </div>
+    </div>
+
+    <div class="scroll-row old" id="hero-old">
+      <div class="row-tag">Old <span class="yr">2024</span></div>
+      <div class="scroll-track right">
+        <div class="item"><img src="../../Old%20Screens/0.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/1.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/2.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/3.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/4.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/5.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/6.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/7.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/8.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/9.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/10.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/11.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/12.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/13.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/14.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/15.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/16.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/17.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/18.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/19.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/20.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/21.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/22.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/23.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/24.jpg" alt=""></div>
+        <!-- dup -->
+        <div class="item"><img src="../../Old%20Screens/0.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/1.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/2.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/3.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/4.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/5.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/6.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/7.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/8.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/9.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/10.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/11.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/12.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/13.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/14.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/15.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/16.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/17.png" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/18.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/19.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/20.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/21.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/22.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/23.jpg" alt=""></div>
+        <div class="item"><img src="../../Old%20Screens/24.jpg" alt=""></div>
+      </div>
+    </div>
+  </div>
+  <div class="sec-head reveal">
+    <h2 class="sec-title">One paragraph, then we begin.</h2>
+  </div>
+  <p class="setup-body reveal">A year ago I designed RentFlow at a 10k Designers bootcamp — Figma, wireframes, the whole rite of passage. Last month I rebuilt it <strong>without a single wireframe</strong>. ChatGPT did the brand visuals. Claude did the thinking. Stitch did the screens. <em>The question I want this page to answer: did AI make me faster, sharper, or just very productive at the wrong things?</em></p>
+</section>
+
+<!-- TOOLKIT -->
+<section id="toolkit" data-screen-label="03 Toolkit">
+  <div class="sec-head reveal">
+    <h2 class="sec-title">Three tools, one job each.</h2>
+    <p class="sec-sub">No tool wore more than one hat. The clarity came from picking the right tool for each step rather than asking one model to do everything.</p>
+  </div>
+
+  <div class="tools reveal">
+    <div class="tool">
+      <div class="tool-logo">
+        <svg width="32" height="32" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-6.99-3.124 10.079 10.079 0 0 0-9.618 6.979 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 6.99 3.123 10.079 10.079 0 0 0 9.618-6.979 9.967 9.967 0 0 0 6.664-4.834 10.079 10.079 0 0 0-1.24-11.817zm-17.096 23.654a7.461 7.461 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.134zm-16.106-6.892a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zm-2.09-17.498a7.47 7.47 0 0 1 3.909-3.287V21.57a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L8.048 25.83a7.504 7.504 0 0 1-5.808-9.696zm27.633 6.446-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943 4.33-2.501 4.332 2.497v4.998l-4.331 2.5-4.331-2.5V21.52z" fill="currentColor"/></svg>
+      </div>
+      <div class="name">ChatGPT</div>
+      <p class="desc">Brand imagery, hero compositions, the things Stitch can&rsquo;t render — bloom, glow, soft material light.</p>
+    </div>
+    <div class="tool">
+      <div class="tool-logo">
+        <img src="../../claude-logo.png" alt="Claude" style="width:32px;height:32px;object-fit:contain;">
+      </div>
+      <div class="name">Claude</div>
+      <p class="desc">UX critique, copy, prompt authoring, and the case-study page you&rsquo;re reading right now.</p>
+    </div>
+    <div class="tool">
+      <div class="tool-logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      </div>
+      <div class="name">Google Stitch</div>
+      <p class="desc">High-fidelity screen assembly. Replaces the wireframe step entirely — prompts in, hi-fi out.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ONBOARDING -->
+<section id="onboarding" data-screen-label="05 Onboarding 13 to 6">
+  <div class="sec-head reveal">
+    <h2 class="sec-title">From eighteen screens to ten.</h2>
+    <p class="sec-sub">I built the bootcamp version to ask for email, Aadhaar, payment date, roommates, and autopay — all before the user saw their property. The rebuild flips the order. After the property code, the property page loads first — landlord, building, rent, due date already filled in. Then the user's name. That's it. Email and social login are gone; Indian fintech runs on phone OTP, not Google or Facebook. The payment date is the landlord's call. Roommates moved to the Splits tab. Autopay moved to the dashboard, where it's an opt-in after the user trusts the app.</p>
+  </div>
+
+  <!-- Old onboarding STATIC grid (onboarding only, no marquee) -->
+  <div class="reveal">
+    <div class="old-onb-grid" style="grid-template-columns:repeat(6,1fr)">
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/0.png" alt=""></div><div class="cap">Splash</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/1.png" alt=""></div><div class="cap">Welcome 1</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/2.png" alt=""></div><div class="cap">Welcome 2</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/3.png" alt=""></div><div class="cap">Welcome 3</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/4.png" alt=""></div><div class="cap">Sign up</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/5.png" alt=""></div><div class="cap">Role picker</div></div>
+    </div>
+    <div class="old-onb-grid" style="grid-template-columns:repeat(6,1fr)">
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/8.png" alt=""></div><div class="cap">Mobile number</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/9.png" alt=""></div><div class="cap">OTP</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/6.png" alt=""></div><div class="cap">Property code</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/10.png" alt=""></div><div class="cap">First name</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/11.png" alt=""></div><div class="cap">Email</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/13.png" alt=""></div><div class="cap">Aadhaar</div></div>
+    </div>
+    <div class="old-onb-grid" style="grid-template-columns:repeat(6,1fr)">
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/7.png" alt=""></div><div class="cap">Property page</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/12.png" alt=""></div><div class="cap">Date page</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/14.png" alt=""></div><div class="cap">Roommate page</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/15.png" alt=""></div><div class="cap">Payment page</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/16.png" alt=""></div><div class="cap">Autopay setup</div></div>
+      <div class="step"><div class="cell"><img src="../../Old%20Screens/17.png" alt=""></div><div class="cap">Autopay complete</div></div>
+    </div>
+  </div>
+
+  <!-- Transition divider -->
+  <div class="transition-divider reveal">
+    <div class="transition-arrow">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M10 17l-5-5M10 17l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="transition-label">Transition</div>
+    <div class="transition-arrow">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M10 17l-5-5M10 17l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <!-- New screens: Splash + 1–9 from Final New Screens -->
+  <div class="six-grid reveal">
+    <div class="step">
+      <div class="phone"><video autoplay muted loop playsinline style="width:100%;border-radius:23px;display:block"><source src="img2/splash.mp4" type="video/mp4"></video></div>
+      <div class="step-num">Splash</div>
+      <div class="step-name">Welcome screen. The first thing a new user sees.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/1%20Welcome%20Screen.png" alt=""></div>
+      <div class="step-num">Welcome</div>
+      <div class="step-name">Never miss a rent payment again. Automated reminders.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/2%20welcome%20screen.png" alt=""></div>
+      <div class="step-num">Welcome</div>
+      <div class="step-name">Never miss a rent payment again. Automated reminders.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/3%20Welcome%20Screen.png" alt=""></div>
+      <div class="step-num">Welcome</div>
+      <div class="step-name">Pay rent &amp; split with roommates. Effortless payments.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/4%20Sign%20Up.png" alt=""></div>
+      <div class="step-num">Phone</div>
+      <div class="step-name">Standard +91 entry. Identity is your phone number.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/5%20OTP.png" alt=""></div>
+      <div class="step-num">OTP</div>
+      <div class="step-name">Six-digit verification. Muscle memory from PhonePe, CRED, GPay.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/6%20Property%20Code.png" alt=""></div>
+      <div class="step-num">Property code</div>
+      <div class="step-name">One field, six characters. Replaces email, name, address, Aadhaar.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/7.Property%20Page.png" alt=""></div>
+      <div class="step-num">Looks like home</div>
+      <div class="step-name">App resolves the code to your landlord, your flat, your rent.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/8%20Name.png" alt=""></div>
+      <div class="step-num">Name</div>
+      <div class="step-name">Just a first name. The only thing the app didn&rsquo;t already know.</div>
+    </div>
+    <div class="step">
+      <div class="phone"><img src="../../Final%20New%20Screens/9.%20Confirmation.png" alt=""></div>
+      <div class="step-num">Confirmation</div>
+      <div class="step-name">You&rsquo;re in. First dashboard loads immediately.</div>
+    </div>
+  </div>
+
+  <!-- Cut list — typographic manifesto -->
+  <div class="cuts-list">
+
+    <div class="cut-row" data-cut>
+      <div class="cut-word-wrap">
+        <h3 class="cut-word">Email</h3>
+        <div class="cut-redline"></div>
+      </div>
+      <p class="cut-sub">Phone is enough. Email is friction without payoff.</p>
+    </div>
+
+    <div class="cut-row" data-cut>
+      <div class="cut-word-wrap">
+        <h3 class="cut-word">Aadhaar capture</h3>
+        <div class="cut-redline"></div>
+      </div>
+      <p class="cut-sub">Move to autopay setup, never onboarding.</p>
+    </div>
+
+    <div class="cut-row" data-cut>
+      <div class="cut-word-wrap">
+        <h3 class="cut-word">Payment-date picker</h3>
+        <div class="cut-redline"></div>
+      </div>
+      <p class="cut-sub">Landlord sets due date. Tenant doesn&rsquo;t choose.</p>
+    </div>
+
+    <div class="cut-row" data-cut>
+      <div class="cut-word-wrap">
+        <h3 class="cut-word">Roommate setup</h3>
+        <div class="cut-redline"></div>
+      </div>
+      <p class="cut-sub">Splits is a separate flow, not a barrier to first dashboard.</p>
+    </div>
+
+    <div class="cut-row" data-cut>
+      <div class="cut-word-wrap">
+        <h3 class="cut-word">Autopay setup</h3>
+        <div class="cut-redline"></div>
+      </div>
+      <p class="cut-sub">Onboarding goal is &ldquo;see your rent.&rdquo; Autopay is later.</p>
+    </div>
+
+
+  </div>
+
+  <!-- Looks Like Home hero shot -->
+  <div class="home-shot reveal">
+    <div class="home-phone-col">
+      <div class="lab new">New · 2026</div>
+      <div class="phone"><div class="phone-glow"></div><img src="img2/onb-5-looks-like-home.png" alt="New property page"></div>
+    </div>
+    <div class="copy">
+      <h3>Both flows start with a property code. What happens next is where they split.</h3>
+      <p>The previous version asked the user for their name, email, and Aadhaar — then showed a basic property page with the landlord's name and address. After that, the tenant picked their own payment date and added their roommates.</p>
+      <p>The rebuild does the opposite. After the property code, the property page loads first — landlord, building, rent, due date already set by the landlord. The user confirms it's their place, types a first name, and they're in. The old flow asked for everything before showing anything. The new flow shows everything before asking for anything.</p>
+    </div>
+    <div class="home-phone-col">
+      <div class="lab">Old · 2024</div>
+      <div class="phone"><div class="phone-glow"></div><img src="../../Old%20Screens/7.png" alt="Old property page"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard" data-screen-label="06 Dashboard">
+  <!-- Old vs New: same layout as home-shot -->
+  <div class="home-shot reveal" style="margin-top:0">
+    <div class="home-phone-col">
+      <div class="lab new">New · 2026</div>
+      <div class="phone"><div class="phone-glow"></div><img src="img2/app-dash-due.png" alt=""></div>
+    </div>
+    <div class="copy">
+      <h3>The old dashboard tried to entertain. <em>The new one tries to disappear.</em></h3>
+      <p>The old dashboard treated rent like a game — hourglass, streaks, rewards trophy, &ldquo;Pay Early.&rdquo; The rebuild treats it like a financial obligation. Rent, due date, &ldquo;Pay Now.&rdquo; Paying rent early isn&rsquo;t an accomplishment to reward.</p>
+      <p>Autopay moved from onboarding to an opt-in link under the Pay Now button. The user shouldn&rsquo;t hand over a UPI mandate before they&rsquo;ve seen the app work.</p>
+      <p>Streaks didn&rsquo;t disappear, just stopped celebrating &mdash; &ldquo;On time, 6 mo&rdquo; is a factual stat alongside total paid this year and next due. Also actively shows the rent status of the roommates.</p>
+    </div>
+    <div class="home-phone-col">
+      <div class="lab">Old · 2024</div>
+      <div class="phone"><div class="phone-glow"></div><img src="img2/old-dash-1.jpg" alt=""></div>
+    </div>
+  </div>
+
+  <div class="sec-head reveal">
+    <h2 class="sec-title">One hero. One action. Three tones.</h2>
+    <p class="sec-sub">Same surface, three states. The status pill, the puck colour, and the supporting line all shift to match urgency. Autopay sits below as an opt-in — it belongs where payments happen, not in onboarding where the user hasn't seen the app work yet.</p>
+  </div>
+
+  <div class="three-states reveal">
+    <div class="state calm">
+      <div class="state-head"><span class="name">Paid for April</span><span class="pill" style="color:var(--green)">Calm</span></div>
+      <div class="phone"><div class="phone-glow"></div><img src="img2/app-dash-paid.png" alt=""></div>
+      <p class="state-note">Green checkmark, &ldquo;Paid on Apr 3 via UPI,&rdquo; autopay confirmed.</p>
+    </div>
+    <div class="state warn">
+      <div class="state-head"><span class="name">Due in 5 days</span><span class="pill" style="color:var(--amber)">Warn</span></div>
+      <div class="phone"><div class="phone-glow"></div><img src="img2/app-dash-due.png" alt=""></div>
+      <p class="state-note">Amber pill, blue&ndash;violet pay puck, friendly nudge.</p>
+    </div>
+    <div class="state over">
+      <div class="state-head"><span class="name">Overdue by 3 days</span><span class="pill" style="color:var(--orange)">Overdue</span></div>
+      <div class="phone"><div class="phone-glow"></div><img src="img2/app-dash-overdue.png" alt=""></div>
+      <p class="state-note">Red eyebrow, orange CTA puck. Urgency without scolding.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SPLITS -->
+<section id="splits" data-screen-label="07 Splits">
+  <div class="sec-head reveal">
+    <h2 class="sec-title">I deleted the nudge button.</h2>
+  </div>
+
+  <div class="splits-tri">
+
+    <!-- ── Col 1 · New Splits tab 2026 ── -->
+    <div class="col reveal" style="transition-delay:0ms">
+      <div class="col-head">
+        <span class="lbl">New &middot; Splits tab</span>
+        <span class="era">2026</span>
+      </div>
+      <div class="phone">
+        <div class="phone-glow"></div>
+        <img src="../../Final New Screens/12 Splits.png" alt="New splits tab">
+      </div>
+      <p class="annot">Status pills only. <strong>Zero action buttons against another tenant.</strong> Name, join date, paid or pending.</p>
+    </div>
+
+    <!-- ── Col 2 · New Propose change 2026 ── -->
+    <div class="col reveal" style="transition-delay:150ms">
+      <div class="col-head">
+        <span class="lbl">New &middot; Propose change</span>
+        <span class="era">2026</span>
+      </div>
+      <div class="phone">
+        <div class="phone-glow" style="background:radial-gradient(50% 50% at 50% 50%,rgba(59,130,246,0.14),transparent 70%)"></div>
+        <img src="../../Final New Screens/12.1 Splits Change.png" alt="Propose change flow">
+      </div>
+      <p class="annot">When the split needs to change, the action is Send Proposal &mdash; structural, not behavioural.</p>
+    </div>
+
+    <!-- ── Col 3 · Old Your Roommates 2024 ── -->
+    <div class="col reveal" style="transition-delay:300ms">
+      <div class="col-head">
+        <span class="lbl">Old &middot; Your Roommates</span>
+        <span class="era">2024</span>
+      </div>
+      <div class="phone">
+        <div class="phone-glow" style="background:radial-gradient(50% 50% at 50% 55%,rgba(239,68,68,0.10),transparent 70%)"></div>
+        <img src="../../Old Screens/21.jpg" alt="Old your roommates screen">
+      </div>
+      <p class="annot">Your Roommates, split structure, Revise Split CTA. Presented as a feature. Removed entirely in the rebuild.</p>
+    </div>
+
+    <!-- ── Col 4 · Old roommate overlay 2024 ── -->
+    <div class="col reveal" style="transition-delay:450ms">
+      <div class="col-head">
+        <span class="lbl">Old &middot; Roommate overlay</span>
+        <span class="era">2024</span>
+      </div>
+      <div class="phone phone-crop-bottom">
+        <div class="phone-glow" style="background:radial-gradient(50% 50% at 50% 55%,rgba(239,68,68,0.12),transparent 70%)"></div>
+        <img src="../../Old Screens/22.jpg" alt="Old roommate overlay">
+      </div>
+      <p class="annot"><strong>Send Reminder</strong> CTA, John Phillips overdue, age, photo, full payment history.</p>
+    </div>
+
+  </div><!-- /splits-tri -->
+
+  <div class="splits-body reveal">
+    <p>The old design treated the roommate like a debtor. A Send Reminder CTA, a photo, an age. Splits became a surveillance tool.</p>
+    <p>The rebuild keeps the visibility &mdash; you can still see who&rsquo;s paid and who hasn&rsquo;t &mdash; and removes the enforcement. Status pills only. No button you can tap to put pressure on another tenant &mdash; the Splits widget shows each roommate&rsquo;s status at a glance, never a way to act on them. The new flow uses Send Proposal, not Send Reminder. You propose a new arrangement, you don&rsquo;t pressure a person.</p>
+  </div>
+
+  <p class="splits-takeaway reveal"><em>Splits is visibility. Accountability is between landlord and tenant &mdash; never between roommates.</em></p>
+</section>
+
+<!-- PAYMENTS -->
+<section id="payments" data-screen-label="08 Payments">
+  <div class="pay-layout">
+    <div class="pay-copy reveal">
+      <h2 class="sec-title">Receipts, not rewards.</h2>
+      <p>The Payments tab is the user&rsquo;s record. Each row shows the month, the amount, the method, and a SUCCESS pill &mdash; nothing else. It gives out the lease information, highlights the amount the user has paid till now and a countdown to the renewal.</p>
+      <p>Filters at the top handle the rest of the history. Here the receipt is the record itself, scoped by year, with the payment method preserved.</p>
+      <p class="pay-pullquote"><em>Memory, not motivation.</em></p>
+    </div>
+    <div class="pay-phone-col reveal">
+      <div class="phone">
+        <div class="phone-glow" style="background:radial-gradient(50% 50% at 50% 50%,rgba(59,130,246,0.18),transparent 70%)"></div>
+        <img src="../../Final%20New%20Screens/11%20Payments.png" alt="Payments screen">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROPERTY INFO -->
+<section id="property-info" data-screen-label="09 Property info">
+  <div class="pay-layout">
+    <div class="pay-copy reveal">
+      <h2 class="sec-title">All your property information, in one place.</h2>
+      <p>Your home sits at the top &mdash; address, monthly rent, and the lease photo. Below it, everything that usually lives in three different emails or a forgotten WhatsApp thread: when you moved in, how long your agreement runs, how much deposit you paid, when it&rsquo;s refundable. One screen, every term.</p>
+      <p>If there&rsquo;s no signed lease yet, RentFlow&rsquo;s Digital Agreement works as one &mdash; verified by RentFlow Shield, viewable in a tap, valid as a record between landlord and tenant.</p>
+    </div>
+    <div class="pay-phone-col reveal">
+      <div class="phone">
+        <div class="phone-glow" style="background:radial-gradient(50% 50% at 50% 50%,rgba(59,130,246,0.18),transparent 70%)"></div>
+        <img src="../../Final%20New%20Screens/14%20Property%20Ingo.png" alt="Property Info screen">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHATSAPP -->
+<section id="whatsapp" data-screen-label="10 WhatsApp">
+  <div class="pay-layout">
+    <div class="pay-copy reveal">
+      <h2 class="sec-title">WhatsApp is not a feature. It&rsquo;s the spine.</h2>
+      <p>The Landlord Contact screen has Call, Email and a Chat on WhatsApp button &mdash; all three with equal visual weight. In a US fintech, email is primary; here, it&rsquo;s the polite fallback no one will use.</p>
+    </div>
+    <div class="pay-phone-col reveal">
+      <div class="phone">
+        <div class="phone-glow"></div>
+        <img src="img2/app-landlord-contact.png" alt="Landlord Contact screen">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUT & ADDED -->
+<section id="cut-add" data-screen-label="11 Cut and added">
+  <!-- Profile phone — centered, every element labelled -->
+  <div class="profile-hero reveal">
+    <div class="profile-callouts">
+      <div class="phone"><div class="phone-glow"></div><img src="img2/app-profile.png" alt="Profile screen"></div>
+      <span class="callout right" style="top:8%"><span class="dot"></span>Profile header</span>
+      <span class="callout left" style="top:23%"><span class="dot"></span>Directs to property page</span>
+      <span class="callout left" style="top:27%"><span class="dot"></span>Landlord interior page</span>
+      <span class="callout right" style="top:33%"><span class="dot"></span>Lease tracker (Optional)</span>
+      <span class="callout left" style="top:48%"><span class="dot"></span>Language · English / हिंदी</span>
+      <span class="callout right" style="top:58%"><span class="dot"></span>Biometric · RBI 2FA compliant</span>
+      <span class="callout left" style="top:82%"><span class="dot"></span>Log out · destructive only</span>
+    </div>
+  </div>
+
+  <div class="sec-head reveal">
+    <h2 class="sec-title">Rent is not a game.</h2>
+    <p class="sec-sub">Together, the cuts and additions move the app from &ldquo;fintech with playful elements&rdquo; to a serious financial tool.</p>
+  </div>
+
+  <!-- Design table: cuts and additions -->
+  <div class="ct-wrap reveal">
+    <div class="ct-grid">
+      <div class="ct-col">
+        <div class="ct-head cut">What I cut</div>
+        <div class="ct-row"><span class="ct-mark cut">−</span><span class="ct-label">Gamification</span></div>
+        <div class="ct-row"><span class="ct-mark cut">−</span><span class="ct-label">Social login</span></div>
+        <div class="ct-row"><span class="ct-mark cut">−</span><span class="ct-label">Light-mode toggle</span></div>
+        <div class="ct-row"><span class="ct-mark cut">−</span><span class="ct-label">Email &amp; Aadhaar in onboarding</span></div>
+        <div class="ct-row"><span class="ct-mark cut">−</span><span class="ct-label">Send Reminder CTA</span></div>
+      </div>
+      <div class="ct-divider"></div>
+      <div class="ct-col">
+        <div class="ct-head add">What I added</div>
+        <div class="ct-row"><span class="ct-mark add">+</span><span class="ct-label">Biometric · RBI 2FA</span></div>
+        <div class="ct-row"><span class="ct-mark add">+</span><span class="ct-label">Payment history with filter</span></div>
+        <div class="ct-row"><span class="ct-mark add">+</span><span class="ct-label">WhatsApp integration</span></div>
+        <div class="ct-row"><span class="ct-mark add">+</span><span class="ct-label">Language picker</span></div>
+        <div class="ct-row"><span class="ct-mark add">+</span><span class="ct-label">Lease accessibility</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDIA -->
+<section id="india" data-screen-label="09 India context">
+  <div class="sec-head reveal">
+    <h2 class="sec-title">Six things that don&rsquo;t translate.</h2>
+    <p class="sec-sub">Western fintech defaults are a trap. Every one of these came from sitting with the actual flow and asking: would my mom use this?</p>
+  </div>
+
+  <div class="india-grid reveal">
+    <div class="india-card"><h4>&ldquo;Property Manager&rdquo; → &ldquo;Landlord.&rdquo;</h4><p>The Indian rental market has landlords, not corporate property managers.</p></div>
+    <div class="india-card"><h4>Phone OTP as identity.</h4><p>Muscle memory of PhonePe, CRED, GPay, Paytm. A six-digit code is what trust looks like.</p></div>
+    <div class="india-card"><h4>Rent due 1st&ndash;5th.</h4><p>Landlord-set. Tenant doesn&rsquo;t pick. The app inherits, the user accepts.</p></div>
+  </div>
+
+</section>
+
+<!-- VISUAL SHIFT -->
+<section id="shift" data-screen-label="10 Visual shift">
+  <div class="sec-head reveal">
+    <h2 class="sec-title">Lavender 2024 → Luminous Obsidian.</h2>
+    <p class="sec-sub">Pastel-on-white said &ldquo;friendly app for a small problem.&rdquo; Rent is a high-stakes monthly category. It deserves the same gravity as the bank app sitting next to it.</p>
+  </div>
+
+  <div class="shift-pairs reveal">
+    <div class="pair">
+      <div class="duo"><div class="frame"><img src="img2/old-welcome-1.jpg" alt=""></div><div class="frame"><img src="img2/onb-1-never-miss.png" alt=""></div></div>
+      <div class="lab"><span>Old</span><span>New</span></div>
+      <div class="name">Welcome</div>
+    </div>
+    <div class="pair">
+      <div class="duo"><div class="frame"><img src="img2/old-phone-1.jpg" alt=""></div><div class="frame"><img src="img2/onb-2-phone.png" alt=""></div></div>
+      <div class="lab"><span>Old</span><span>New</span></div>
+      <div class="name">Phone entry</div>
+    </div>
+    <div class="pair">
+      <div class="duo"><div class="frame"><img src="img2/old-dash-1.jpg" alt=""></div><div class="frame"><img src="img2/app-dash-due.png" alt=""></div></div>
+      <div class="lab"><span>Old</span><span>New</span></div>
+      <div class="name">Dashboard</div>
+    </div>
+    <div class="pair">
+      <div class="duo"><div class="frame"><img src="img2/old-roommate-overlay.jpg" alt=""></div><div class="frame"><img src="img2/app-splits.png" alt=""></div></div>
+      <div class="lab"><span>Old</span><span>New</span></div>
+      <div class="name">Roommates → Splits</div>
+    </div>
+  </div>
+
+
+  <div class="system-trio reveal">
+    <div class="token-card">
+      <div class="ttl">Colour</div>
+      <div class="swatches">
+        <div class="swatch"><span class="chip" style="background:#000"></span><span class="name">Background</span><span>#000</span></div>
+        <div class="swatch"><span class="chip" style="background:#0F172A"></span><span class="name">Surface</span><span>#0F172A</span></div>
+        <div class="swatch"><span class="chip" style="background:#3B82F6"></span><span class="name">Primary</span><span>#3B82F6</span></div>
+        <div class="swatch"><span class="chip" style="background:#8B5CF6"></span><span class="name">Accent</span><span>#8B5CF6</span></div>
+        <div class="swatch"><span class="chip" style="background:linear-gradient(135deg,#3B82F6,#8B5CF6)"></span><span class="name">Gradient</span><span>135°</span></div>
+        <div class="swatch"><span class="chip" style="background:#FB923C"></span><span class="name">Overdue</span><span>#FB923C</span></div>
+      </div>
+    </div>
+    <div class="token-card">
+      <div class="ttl">Type</div>
+      <div class="type-rows">
+        <div class="type-row"><span class="specimen" style="font-size:30px;font-weight:600">Display</span><span class="meta">Manrope 88</span></div>
+        <div class="type-row"><span class="specimen" style="font-size:20px;font-weight:600">Headline</span><span class="meta">Manrope 32</span></div>
+        <div class="type-row"><span class="specimen" style="font-size:15px">Body text</span><span class="meta">Manrope 15</span></div>
+        <div class="type-row"><span class="specimen mono" style="font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3)">CAPTION</span><span class="meta">Mono 11</span></div>
+      </div>
+    </div>
+    <div class="token-card">
+      <div class="ttl">Signature button</div>
+      <p style="font-size:12.5px;color:var(--ink-2);line-height:1.55;max-width:280px">Frosted capsule, gradient puck, white arrow. Same component across pay, verify, send proposal.</p>
+      <div class="btn-demo">
+        <span class="btn-rentflow">Pay Now <span class="puck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI VS ME -->
+<section id="ai-vs-me" data-screen-label="11 AI vs me">
+  <div class="sec-head reveal">
+    <h2 class="sec-title">The AI smoothened my process. The decisions stayed mine.</h2>
+    <p class="sec-sub">Every tool on this page took manual work off my desk. None of them named the user, named the market, or knew when to cut a feature.</p>
+  </div>
+
+  <div class="vs reveal">
+    <div class="col">
+      <div class="col-head"><span class="ttl">What the AI did</span></div>
+      <ul>
+        <li><span class="bullet">01</span><span>Generated visuals.</span></li>
+        <li><span class="bullet">02</span><span>Assembled high-fidelity screens directly from prompts. No wireframe step.</span></li>
+        <li><span class="bullet">03</span><span>Iterated copy at scale.</span></li>
+        <li><span class="bullet">04</span><span>Surfaced layout options I wouldn&rsquo;t have hand-sketched.</span></li>
+      </ul>
+    </div>
+    <div class="col hi">
+      <div class="col-head"><span class="ttl">What I did</span></div>
+      <ul>
+        <li><span class="bullet">01</span><span>Held the strategic frame across the whole product, not one screen at a time.</span></li>
+        <li><span class="bullet">02</span><span>Named the user, named the market, named the constraints (RBI 2FA, UPI, Aadhaar caution).</span></li>
+        <li><span class="bullet">03</span><span>Decided what to cut &mdash; gamification, social login, the streak system, the Send Reminder CTA.</span></li>
+        <li><span class="bullet">04</span><span>Owned the splits philosophy. Visibility, not enforcement.</span></li>
+        <li><span class="bullet">05</span><span>Recognised the Indian context and rejected Western fintech defaults.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="vs-kicker reveal">The AI made me faster. It didn&rsquo;t make me a better designer. <em>That&rsquo;s still on me.</em></p>
+</section>
+
+
+<!-- LEARNINGS -->
+<section id="learnings" data-screen-label="13 Learnings">
+  <div class="sec-head reveal">
+    <h2 class="sec-title">Four notes I want to keep.</h2>
+  </div>
+  <div class="learnings reveal">
+    <div class="learn"><h4>The AI&rsquo;s worst trait is enthusiasm.</h4><p>It will happily build the wrong thing, very fast. My job became knowing when to stop, rethink, and write a better prompt.</p></div>
+    <div class="learn"><h4>Stitch can&rsquo;t render bloom or glow.</h4><p>So I generated hero visuals in ChatGPT and let Stitch handle utility screens. Right tool, right step.</p></div>
+    <div class="learn"><h4>Cutting features is harder than adding them.</h4><p>The old app had a streak system and an Uber Eats redemption flow. Both are gone. Both made the app worse. The AI would not have removed them on its own.</p></div>
+    <div class="learn"><h4>Indian context is non-negotiable.</h4><p>No Western fintech pattern transferred without re-examination — Aadhaar paranoia, UPI defaults, WhatsApp, landlord vocabulary.</p></div>
+  </div>
+</section>
+
+<!-- COLOPHON -->
+<section id="colophon">
+  <div class="colophon reveal">
+    <div class="end">
+      <p>Designed and built by Rohant Chadha. Open to product design and PM roles at startups working on real problems for Indian users.</p>
+      <a class="email" href="mailto:work@coledesign.in">work@coledesign.in</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  const items = [...document.querySelectorAll('.lnav-item')];
+  const targets = items.map(a => document.querySelector(a.getAttribute('href')));
+
+  function onScroll(){
+    const mid = window.scrollY + window.innerHeight * 0.35;
+    let active = 0;
+    targets.forEach((t,i)=>{ if(t && t.offsetTop <= mid) active = i; });
+    items.forEach((it,i) => it.classList.toggle('is-active', i===active));
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Smooth scroll for nav anchors
+  items.forEach(a => a.addEventListener('click', (e) => {
+    const el = document.querySelector(a.getAttribute('href'));
+    if(el){ e.preventDefault(); window.scrollTo({top:el.offsetTop - 20, behavior:'smooth'}); }
+  }));
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const splashVid = document.querySelector('.splash-video');
+  if(splashVid){
+    splashVid.removeAttribute('loop');
+    splashVid.playbackRate = 1.2;
+    splashVid.addEventListener('canplay', function(){ this.playbackRate = 1.2; });
+    splashVid.addEventListener('timeupdate', function(){
+      if(this.currentTime >= 7){ this.pause(); this.currentTime = 7; }
+    });
+  }
+})();
+</script>
+
+<script>
+(function(){
+  const cutIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('is-cut');
+        cutIO.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.3});
+  document.querySelectorAll('.cut-row').forEach(el => cutIO.observe(el));
+})();
+</script>
+
+<script>
+(function(){
+  // Lease progress bar: 0 → 67% on scroll
+  const leaseCard = document.getElementById('lease-card');
+  const leaseFill = document.getElementById('lease-fill');
+  if(leaseCard && leaseFill){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ leaseFill.style.width='67%'; }
+      });
+    },{threshold:0.5}).observe(leaseCard);
+  }
+
+  // Payment rows: staggered fade-in
+  const payRows = document.querySelector('.pay-rows');
+  if(payRows){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.querySelectorAll('.pay-row').forEach(function(r){ r.classList.add('in'); });
+        }
+      });
+    },{threshold:0.2}).observe(payRows);
+  }
+
+  // Pull quote: scale in
+  const pq = document.querySelector('.pay-pullquote');
+  if(pq){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); }
+      });
+    },{threshold:0.3}).observe(pq);
+  }
+})();
+</script>
+</body>
+</html>
