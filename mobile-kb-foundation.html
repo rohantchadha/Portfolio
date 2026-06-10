@@ -111,9 +111,15 @@
   .hero { padding-top: 80px; padding-bottom: 40px; position: relative; }
 
   .hero-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 56px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: calc(env(safe-area-inset-top, 0px) + 28px) 24px 14px;
+    display: flex; align-items: center; justify-content: flex-start;
+    pointer-events: none;
+    margin-bottom: 0;
   }
+  .hero-nav .back-btn { pointer-events: auto; }
 
   .back-btn {
     font-family: var(--mono); font-size: 12px; color: var(--ink-3);
@@ -148,8 +154,7 @@
   }
 
   @media (max-width: 700px) {
-    .hero { padding-top: 60px; }
-    .hero-nav { margin-bottom: 40px; }
+    .hero { padding-top: 80px; }
   }
 
   .hero h1 {
@@ -218,6 +223,25 @@
   }
 
   p.body strong { color: var(--ink); font-weight: 500; }
+
+  /* Live + Contact links */
+  .live-section { padding-top: 48px; padding-bottom: 32px; }
+  .live-section .live-row { margin-bottom: 32px; }
+  .live-section .live-row:last-child { margin-bottom: 0; }
+  .live-section .eyebrow { display: block; margin-bottom: 14px; }
+  .live-link {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(28px, 6vw, 40px);
+    letter-spacing: -0.015em;
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--ink-3);
+    transition: border-color .2s;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    display: inline-block;
+    word-break: break-word;
+  }
+  .live-link:active { border-bottom-color: var(--ink); }
 
   /* ── Sticky side label ── */
   .side { position: sticky; top: 120px; align-self: start; }
@@ -1100,7 +1124,7 @@
     </div>
     <div>
       <p class="lead" style="margin-top:0">
-        Free programs have a dropout problem. When a student pays nothing to enrol, there's nothing to lose by ghosting in week three. KB Foundation already had a workaround — a small refundable deposit returned on completion — but it was buried in a WhatsApp message, not on the website. We made it a homepage section.
+        Free programs have a dropout problem. When a student pays nothing to enrol, there's nothing to lose by ghosting in week three. KB Foundation already had a workaround — a small refundable deposit returned on completion — but it was buried in a WhatsApp message, not on the website. I made it a homepage section.
       </p>
       <p class="body">
         The design treats it as a feature, not fine print. Three pillars, one line each. The language is plain on purpose — students need to see, immediately, that the deposit is fully refundable and that there are no hidden fees.
@@ -1309,6 +1333,17 @@
   </div>
 </section>
 
+<section class="wrap live-section">
+  <div class="live-row">
+    <span class="eyebrow">— Live at</span>
+    <a class="live-link" href="https://kb-foundation.com/" target="_blank" rel="noopener">www.kb-foundation.com</a>
+  </div>
+  <div class="live-row">
+    <span class="eyebrow">— Reach me</span>
+    <a class="live-link" href="mailto:espresso@rohantchadha.com">espresso@rohantchadha.com</a>
+  </div>
+</section>
+
 <!-- ── NEXT / CTA ── -->
 <section class="wrap" id="s15">
   <div class="next" style="justify-content:center">
@@ -1316,10 +1351,6 @@
   </div>
 </section>
 
-<footer class="wrap">
-  <span>© 2026 — Case study, KB Foundation</span>
-  <span>Designed in Delhi, 2025</span>
-</footer>
 
 <script>
 (function () {
