@@ -1125,8 +1125,8 @@ body.dark #m-obj-computer .m-sonar-dot, body.dark #m-obj-computer .m-sonar-ring 
   document.addEventListener('mousemove', function(e) {
     cur.style.left = e.clientX + 'px';
     cur.style.top  = e.clientY + 'px';
-    dot.style.left = (e.clientX + 32) + 'px';
-    dot.style.top  = (e.clientY + 32) + 'px';
+    dot.style.left = (e.clientX - 3) + 'px';
+    dot.style.top  = (e.clientY - 3) + 'px';
   });
 
   // Splash animation
