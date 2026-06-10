@@ -189,12 +189,13 @@ function Icon({ kind, size = 32, fill }) {
 // ─── Menu bar ────────────────────────────────────────────
 function MenuBar({ view, onAction, clock }) {
   const [open, setOpen] = React.useState(null);
+  const [helpOpen, setHelpOpen] = React.useState(false);
   React.useEffect(() => {
-    if (!open) return;
-    const h = e => { if (!e.target.closest('[data-menubar]')) setOpen(null); };
+    if (!open && !helpOpen) return;
+    const h = e => { if (!e.target.closest('[data-menubar]')) { setOpen(null); setHelpOpen(false); } };
     window.addEventListener('pointerdown', h);
     return () => window.removeEventListener('pointerdown', h);
-  }, [open]);
+  }, [open, helpOpen]);
 
   const MENUS = {
     apple:   [ {label:'Quit RohantOS',action:'quit'},{sep:true},{label:'Alarm Clock',disabled:true,glyph:'⏰'},{label:'Calculator',disabled:true,glyph:'🧮'},{label:'Chooser',disabled:true},{label:'Note Pad',disabled:true},{label:'Scrapbook',disabled:true} ],
@@ -218,7 +219,7 @@ function MenuBar({ view, onAction, clock }) {
         ))}
       </div>
       <div style={{ display:'flex', alignItems:'center', gap:10, fontSize:12 }}>
-        <span style={{ opacity:0.7 }}>?</span>
+        <span data-no-drag onClick={e=>{e.stopPropagation(); setHelpOpen(o=>!o);}} style={{ cursor:'pointer', padding:'0 5px', height:22, display:'flex', alignItems:'center', userSelect:'none', background:helpOpen?T.line:'transparent', color:helpOpen?'#fff':T.ink, opacity:helpOpen?1:0.7 }}>?</span>
         <span style={{ fontVariantNumeric:'tabular-nums' }}>{clock.hh}:{clock.mm} {clock.ampm}</span>
       </div>
       {open && (
@@ -227,6 +228,18 @@ function MenuBar({ view, onAction, clock }) {
             ? <div key={i} style={{ borderTop:`1px solid ${T.line}`, margin:'4px 0', opacity:0.5 }}/>
             : <MenuItem key={i} {...it} onClick={() => choose(it)}/>
           )}
+        </div>
+      )}
+      {helpOpen && (
+        <div onClick={e=>e.stopPropagation()} style={{ position:'absolute', top:28, right:10, width:264, background:'#fff', border:`1px solid ${T.line}`, boxShadow:`2px 2px 0 0 ${T.line},0 6px 18px rgba(0,0,0,0.18)`, fontFamily:T.ui, zIndex:2000 }}>
+          <div style={{ height:19, position:'relative', borderBottom:`1px solid ${T.line}`, background:stripeBarThin, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div onClick={()=>setHelpOpen(false)} onMouseDown={e=>e.stopPropagation()} style={{ position:'absolute', left:6, top:4, width:11, height:11, background:'#fff', border:`1px solid ${T.line}`, cursor:'pointer' }}/>
+            <div style={{ background:T.chrome, padding:'0 12px', fontSize:10, fontWeight:600, letterSpacing:1, textTransform:'uppercase' }}>Did You Know</div>
+          </div>
+          <div style={{ padding:'12px 14px 14px', fontSize:12, lineHeight:1.5, color:'#3a3530' }}>
+            My numerologist told me to spell my name <b>Rohhaant Chadhaa</b> if I want to be successful.
+            <div style={{ marginTop:8, opacity:0.65, fontStyle:'italic' }}>I refused. Looked too ugly to live with.</div>
+          </div>
         </div>
       )}
     </div>
