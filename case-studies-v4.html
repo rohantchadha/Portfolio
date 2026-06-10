@@ -287,6 +287,31 @@ function MacWindow({ win, focused, onFocus, onClose, onMinimize, onMove, childre
 function Explorer({ onOpenProject, view, setView }) {
   const [sel,  setSel]  = React.useState(null);
   const selP = sel ? PROJECTS.find(p => p.id === sel) : null;
+  React.useEffect(() => {
+    const COLS = view === 'icon' ? 3 : 1;
+    const N = PROJECTS.length;
+    const clamp = i => Math.max(0, Math.min(N - 1, i));
+    const onKey = (e) => {
+      const isArrow = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight'].includes(e.key);
+      if (isArrow) {
+        e.preventDefault();
+        const idx = sel ? PROJECTS.findIndex(p => p.id === sel) : -1;
+        if (idx === -1) { setSel(PROJECTS[0].id); return; }
+        let next = idx;
+        if (e.key === 'ArrowDown')  next = clamp(idx + COLS);
+        if (e.key === 'ArrowUp')    next = clamp(idx - COLS);
+        if (e.key === 'ArrowRight' && COLS > 1) next = clamp(idx + 1);
+        if (e.key === 'ArrowLeft'  && COLS > 1) next = clamp(idx - 1);
+        setSel(PROJECTS[next].id);
+      } else if (e.key === 'Enter' && sel) {
+        e.preventDefault();
+        const p = PROJECTS.find(p => p.id === sel);
+        if (p) onOpenProject(p);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [sel, view, onOpenProject]);
   return (
     <div style={{ background:'#fff', fontFamily:T.ui, width:'100%' }} onClick={() => setSel(null)}>
       {/* address bar */}
