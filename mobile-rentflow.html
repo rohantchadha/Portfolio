@@ -20,41 +20,31 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700;800&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="rent-flow-handoff-v2/rent-flow/project/style-v21.css" />
 <style>
-  /* Inline back-link at top of page — scrolls with content (not sticky) */
-  body .rohantos-back-wrap {
-    padding: calc(env(safe-area-inset-top, 0px) + 44px) calc(env(safe-area-inset-left, 0px) + 18px) 16px;
-  }
-  body .rohantos-back {
-    display: inline-flex;
+  /* Sticky back button */
+  body .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 18px 16px;
     font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
     font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: none;       /* honor the literal "Go to RohantOS" casing (OS stays caps) */
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+  }
+  body .topbar .left { pointer-events: auto; }
+  body .topbar a {
     color: #E8E2D5;
+    opacity: 0.75;
     text-decoration: none;
-    background: rgba(20, 18, 28, 0.78);
-    border: 1px solid rgba(232, 226, 213, 0.18);
-    border-radius: 999px;
+    transition: opacity 0.2s ease;
     -webkit-tap-highlight-color: transparent;
-    transition: color .2s ease, border-color .2s ease, background .2s ease;
+    padding: 8px 6px;
   }
-  body .rohantos-back .arrow { font-size: 14px; line-height: 1; }
-  @media (hover: hover) and (pointer: fine) {
-    body .rohantos-back:hover {
-      color: #ffffff;
-      background: rgba(20, 18, 28, 0.92);
-      border-color: rgba(232, 226, 213, 0.32);
-    }
-  }
-  body .rohantos-back:active { transform: translateY(1px); }
-  body .rohantos-back-footer {
-    display: flex !important;            /* block-level so it sits on its own row, below the email link */
-    width: fit-content !important;       /* don't stretch full width — keep the pill shape */
-    margin-top: 24px !important;
-  }
+  body .topbar a:active { opacity: 1; }
 
   /* +20% type bump on the hero headline + lede (override style-v21.css cascade) */
   body .hero .hero-h1 { font-size: 125px; }
@@ -360,9 +350,9 @@
   <span class="mobile-section-name" id="mobile-section-name">Introduction</span>
 </div>
 
-<div class="rohantos-back-wrap">
-  <a class="rohantos-back" href="mobile-work.html"><span class="arrow">←</span><span>Go to RohantOS</span></a>
-</div>
+<header class="topbar">
+  <div class="left"><a href="mobile-work.html">← Back</a></div>
+</header>
 
 <!-- LEFT VERTICAL NAV -->
 <aside class="lnav" aria-label="Section navigation">
@@ -1083,7 +1073,6 @@
     <div class="end">
       <p>Designed and built by Rohant Chadha as a part of 10k Designers Project for Cohort 10.</p>
       <a class="email" href="mailto:espresso@rohantchadha.com">espresso@rohantchadha.com</a>
-      <a class="rohantos-back rohantos-back-footer" href="mobile-work.html"><span class="arrow">←</span><span>Go to RohantOS</span></a>
     </div>
   </div>
 </section>
