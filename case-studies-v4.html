@@ -570,10 +570,10 @@ function MacDesktop() {
   // Windows — seed positions relative to initial viewport
   const { wins, focus, open, close, minimize, move } = useWindows([
     { id:'explorer', type:'explorer', title:'Work',               x:40,                        y:42, w:Math.min(550,window.innerWidth*0.43), h:420 },
-    { id:'about',    type:'about',    title:'About This Designer', x:Math.max(380,window.innerWidth-476), y:68, w:370, h:400 },
+    { id:'about',    type:'about',    title:'About This Designer', x:Math.max(380,window.innerWidth-510), y:90, w:370, h:400 },
   ]);
 
-  const openAbout    = () => open({ id:'about',    type:'about',    title:'About This Designer', x:Math.max(380,vp.w-476), y:68, w:370, h:400 });
+  const openAbout    = () => open({ id:'about',    type:'about',    title:'About This Designer', x:Math.max(380,vp.w-510), y:90, w:370, h:400 });
   const openWork     = () => open({ id:'explorer', type:'explorer', title:'Work',               x:40,                     y:42, w:Math.min(550,vp.w*0.43), h:420 });
   const openHomepage = () => open({ id:'homepage', type:'homepage', title:'Homepage',            x:Math.round(vp.w/2-150),y:Math.round(vp.h/2-100), w:300, h:200 });
   const openProject  = p  => { if(p.url){ window.location.href = p.url; return; } open({ id:`case-${p.id}`, type:'case', project:p, title:p.name, x:160+Math.random()*160, y:90+Math.random()*120, w:390, h:300 }); };
