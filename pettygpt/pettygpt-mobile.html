@@ -432,9 +432,18 @@
 
   /* ════════ Back to RohantOS ════════ */
   .rohantos-back-arrow-wrap {
-    padding: calc(env(safe-area-inset-top, 0px) + 24px) 0 0;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: calc(env(safe-area-inset-top, 0px) + 14px) 0 10px;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(242, 235, 224, 0.92) 0%, rgba(242, 235, 224, 0.55) 60%, rgba(242, 235, 224, 0) 100%);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
+  .rohantos-back-arrow-wrap .container { pointer-events: none; }
   .rohantos-back-arrow {
+    pointer-events: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
