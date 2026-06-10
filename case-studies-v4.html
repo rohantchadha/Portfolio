@@ -147,11 +147,11 @@ const stripeBar     = `repeating-linear-gradient(180deg,${T.line} 0 1px,transpar
 const stripeBarThin = `repeating-linear-gradient(180deg,${T.line} 0 1px,transparent 1px 2px)`;
 
 const PROJECTS = [
-  { id:'absolute-realty', name:'Absolute Realty', kind:'Case Study',  tone:'sky',     size:'14.2 MB', modified:'Mar 14, 2026', blurb:'A new website for Absolute Realty — the luxury arm of Shaloo Agencies in Gurugram. Built against the genre: no carousels, no "Hot Deal" badges, no chatbot. One render, one sentence, and a pace that mirrors how the firm actually sells.', url:'absolute-realty/case-study/index.html' },
-  { id:'rent-flow',       name:'Rent Flow',        kind:'Case Study',  tone:'mustard', size:'8.1 MB',  modified:'Feb 02, 2026', blurb:'A rent tracker for tenants, rebuilt in 2026 without a single wireframe — prompt-to-hi-fi via Stitch, with Figma reserved for what AI can\'t render. The case study is about the rebuild process as much as the product.', url:'rent-flow-handoff-v2/rent-flow/project/rentflow-case-study.html' },
+  { id:'absolute-realty', name:'Absolute Realty', kind:'Case Study',  tone:'sky',     size:'14.2 MB', modified:'Mar 14, 2026', blurb:'A new website for Absolute Realty — the luxury arm of Shaloo Agencies in Gurugram. Built against the genre: no carousels, no "Hot Deal" badges, no chatbot. One render, one sentence, and a pace that mirrors how the firm actually sells.', url:'/work/absolute-realty/' },
+  { id:'rent-flow',       name:'Rent Flow',        kind:'Case Study',  tone:'mustard', size:'8.1 MB',  modified:'Feb 02, 2026', blurb:'A rent tracker for tenants, rebuilt in 2026 without a single wireframe — prompt-to-hi-fi via Stitch, with Figma reserved for what AI can\'t render. The case study is about the rebuild process as much as the product.', url:'/work/rent-flow/' },
   { id:'pousse-le-rit',   name:'Pousse Le Rit',    kind:'Case Study',  tone:'rose',    size:'5.7 MB',  modified:'Nov 21, 2025', blurb:'A website for a French farm selling natural, organic produce. Hand-set and grounded — closer to a market stall than a supermarket.', comingSoon: true },
-  { id:'pettygpt',        name:'PettyGPT',          kind:'Side Project',tone:'peach',   size:'2.4 MB',  modified:'Sep 09, 2025', blurb:'A chatbot that answers any question with maximum passive-aggressive energy. Started as a joke, kept going. Mostly an exploration of voice and tone in conversational UI.', url:'pettygpt/pettygpt-case-study.html' },
-  { id:'kb-foundation',   name:'KB Foundation',     kind:'Case Study',  tone:'sage',    size:'11.6 MB', modified:'Jul 30, 2025', blurb:'Rebuilding a Delhi non-profit\'s website around one idea: the homepage of a free-education NGO should read like a course catalogue, not a donation appeal.', url:'kb-foundation/kb-foundation-case-study.html' },
+  { id:'pettygpt',        name:'PettyGPT',          kind:'Side Project',tone:'peach',   size:'2.4 MB',  modified:'Sep 09, 2025', blurb:'A chatbot that answers any question with maximum passive-aggressive energy. Started as a joke, kept going. Mostly an exploration of voice and tone in conversational UI.', url:'/work/pettygpt/' },
+  { id:'kb-foundation',   name:'KB Foundation',     kind:'Case Study',  tone:'sage',    size:'11.6 MB', modified:'Jul 30, 2025', blurb:'Rebuilding a Delhi non-profit\'s website around one idea: the homepage of a free-education NGO should read like a course catalogue, not a donation appeal.', url:'/work/kb-foundation/' },
 ];
 
 const TONE = { peach:['#f4b896','#e89770'], mustard:['#e8c574','#d4a548'], sage:['#b8c9a0','#94a87a'], sky:['#a8c0d4','#7a9cb8'], rose:['#e4a8b4','#c87e8e'], cream:['#f0e4c8','#ddc898'] };
@@ -447,7 +447,7 @@ function AboutDialog({ win, focused, onFocus, onClose, onMinimize, onMove }) {
       </div>
       <div style={{ padding:'12px 18px 16px',display:'flex',alignItems:'center',justifyContent:'space-between' }}>
         <div style={{ fontSize:11,opacity:0.6,fontFamily:T.mono }}>© 2026 — all warmth reserved</div>
-        <button data-no-drag onClick={e=>{e.stopPropagation();window.location.href='about.html';}} onMouseDown={e=>e.stopPropagation()} style={{ padding:'4px 18px',fontSize:11,fontFamily:'inherit',background:T.line,color:'#fff',border:`1.5px solid ${T.line}`,borderRadius:12,boxShadow:`1.5px 1.5px 0 0 ${T.line}`,cursor:'pointer',fontWeight:700,letterSpacing:0.3 }}>Read More →</button>
+        <button data-no-drag onClick={e=>{e.stopPropagation();window.location.href='/about';}} onMouseDown={e=>e.stopPropagation()} style={{ padding:'4px 18px',fontSize:11,fontFamily:'inherit',background:T.line,color:'#fff',border:`1.5px solid ${T.line}`,borderRadius:12,boxShadow:`1.5px 1.5px 0 0 ${T.line}`,cursor:'pointer',fontWeight:700,letterSpacing:0.3 }}>Read More →</button>
       </div>
     </div>
   );
@@ -609,7 +609,7 @@ function MacDesktop() {
     const ic=icons.find(x=>x.id===id); if(!ic) return;
     if(ic.action==='about') openAbout();
     else if(ic.action==='work') openWork();
-    else if(ic.action==='homepage') { sessionStorage.setItem('skipSplash','1'); window.location.href='index.html#/desk'; }
+    else if(ic.action==='homepage') { sessionStorage.setItem('skipSplash','1'); window.location.href='/#/desk'; }
   };
 
   return (
@@ -621,7 +621,7 @@ function MacDesktop() {
       {/* menu bar */}
       <div style={{ position:'relative',zIndex:1000,flexShrink:0 }}>
         <MenuBar view={view} onAction={a=>{
-          if(a==='open-home' || a==='quit') { sessionStorage.setItem('skipSplash','1'); window.location.href='index.html#/desk'; }
+          if(a==='open-home' || a==='quit') { sessionStorage.setItem('skipSplash','1'); window.location.href='/#/desk'; }
           else if(a==='restart' || a==='shutdown') { window.location.href='splash.html'; }
           else if(a==='view-icon') setView('icon');
           else if(a==='view-list') setView('list');

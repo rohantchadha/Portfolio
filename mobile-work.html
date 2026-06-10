@@ -29,7 +29,7 @@
 <script>
 /* Responsive page redirect — keeps URL in sync with viewport across the 1025px breakpoint */
 (function(){
-  function go(){ window.location.replace("case-studies-v4.html"); }
+  function go(){ window.location.replace("/work"); }
   function check(){ if (window.innerWidth >= 1025) go(); }
   check();
   var t;
@@ -527,7 +527,7 @@ function MacDesktop() {
     const ic=icons.find(x=>x.id===id); if(!ic) return;
     if(ic.action==='about') openAbout();
     else if(ic.action==='work') openWork();
-    else if(ic.action==='homepage') { sessionStorage.setItem('skipSplash','1'); window.location.href='index.html#/desk'; }
+    else if(ic.action==='homepage') { sessionStorage.setItem('skipSplash','1'); window.location.href='/#/desk'; }
   };
 
   return (

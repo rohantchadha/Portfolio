@@ -1,0 +1,25 @@
+{
+  "redirects": [
+    { "source": "/work/rent-flow",       "destination": "/work/rent-flow/",       "permanent": false },
+    { "source": "/work/absolute-realty", "destination": "/work/absolute-realty/", "permanent": false },
+    { "source": "/work/kb-foundation",   "destination": "/work/kb-foundation/",   "permanent": false },
+    { "source": "/work/pettygpt",        "destination": "/work/pettygpt/",        "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/work",    "destination": "/case-studies-v4.html" },
+    { "source": "/about",   "destination": "/about.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+
+    { "source": "/work/rent-flow/",         "destination": "/rent-flow-handoff-v2/rent-flow/project/rentflow-case-study.html" },
+    { "source": "/work/rent-flow/:path*",   "destination": "/rent-flow-handoff-v2/rent-flow/project/:path*" },
+
+    { "source": "/work/absolute-realty/",       "destination": "/absolute-realty/case-study/index.html" },
+    { "source": "/work/absolute-realty/:path*", "destination": "/absolute-realty/case-study/:path*" },
+
+    { "source": "/work/kb-foundation/",         "destination": "/kb-foundation/kb-foundation-case-study.html" },
+    { "source": "/work/kb-foundation/:path*",   "destination": "/kb-foundation/:path*" },
+
+    { "source": "/work/pettygpt/",         "destination": "/pettygpt/pettygpt-case-study.html" },
+    { "source": "/work/pettygpt/:path*",   "destination": "/pettygpt/:path*" }
+  ]
+}
