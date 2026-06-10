@@ -292,14 +292,14 @@ section { position: relative; }
 
 /* ---------- The Brief (bento grid) ---------- */
 .brief {
-  padding: clamp(96px, 16vh, 200px) 0 clamp(72px, 12vh, 160px);
+  padding: clamp(40px, 5vh, 72px) 0 clamp(56px, 9vh, 120px);
 }
 .brief-bento {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: minmax(160px, auto);
   gap: 14px;
-  margin-top: clamp(48px, 8vh, 88px);
+  margin-top: clamp(20px, 3vh, 36px);
 }
 .bento-cell {
   position: relative;
@@ -383,7 +383,7 @@ section { position: relative; }
   background: var(--bg);
 }
 .screen-intro {
-  padding: clamp(96px, 16vh, 180px) 0 clamp(48px, 8vh, 80px);
+  padding: clamp(40px, 5vh, 72px) 0 clamp(32px, 5vh, 56px);
 }
 .screen-intro .row {
   display: grid;
@@ -488,22 +488,20 @@ section { position: relative; }
 .captions-inner {
   position: relative;
   width: 100%;
-  height: 240px;
+  height: 295px;
 }
 .caption {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  transition: opacity .25s var(--ease);
   pointer-events: none;
 }
 .caption.is-active {
   opacity: 1;
-  transform: translateY(0);
 }
 .caption .lab {
   font-family: var(--serif);
@@ -552,7 +550,7 @@ section { position: relative; }
 
 /* ---------- Property Card breakdown ---------- */
 .card-breakdown {
-  padding: clamp(120px, 18vh, 200px) 0 clamp(96px, 14vh, 160px);
+  padding: clamp(48px, 6vh, 80px) 0 clamp(56px, 9vh, 100px);
   background: var(--bg);
   border-top: 1px solid var(--hairline);
 }
@@ -630,7 +628,7 @@ section { position: relative; }
 
 /* ---------- Also section ---------- */
 .also {
-  padding: clamp(120px, 18vh, 220px) 0 clamp(72px, 10vh, 120px);
+  padding: clamp(48px, 6vh, 80px) 0 clamp(48px, 7vh, 80px);
   background: var(--bg);
   border-top: 1px solid var(--hairline);
 }
@@ -671,7 +669,7 @@ section { position: relative; }
 
 /* ---------- Reflection ---------- */
 .reflection {
-  padding: clamp(140px, 20vh, 240px) 0 clamp(120px, 18vh, 200px);
+  padding: clamp(56px, 7vh, 96px) 0 clamp(80px, 12vh, 140px);
   background: var(--bg);
   border-top: 1px solid var(--hairline);
 }
@@ -724,6 +722,7 @@ section { position: relative; }
 .reflection .sig dd a {
   border-bottom: 1px solid var(--hairline);
   transition: border-color .2s;
+  cursor: pointer;
 }
 .reflection .sig dd a:hover { border-color: var(--ink); }
 
@@ -804,7 +803,7 @@ section { position: relative; }
 </script>
 </head>
 
-<body>
+<body data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false">
 
 <div class="progress" id="progress"></div>
 
@@ -873,7 +872,7 @@ section { position: relative; }
 
       <div class="bento-cell text bento-body reveal" data-delay="1">
         <p>In luxury real estate, "premium" defaults to a stack of treatments — spinning carousels, gold accents, badges that shout "Hot Deal," forms that ask for budget and timeline before a name. Absolute Realty's site does none of that.</p>
-        <p>The home page opens on <em>one render,</em> not seven. Featured projects sit edge-to-edge with three lines apiece — name, location, configuration. The contact form has four fields. There is no chatbot, no countdown, no sticky CTA. <em>Premium, here,</em> is the discipline to remove everything that's trying too hard.</p>
+        <p>The home page opens on <em>one render</em>. Featured projects sit edge-to-edge with three lines apiece — name, location, configuration. The contact form has four fields. There is no chatbot, no countdown, no sticky CTA. <em>Premium, here,</em> is the discipline to remove everything that's trying too hard.</p>
       </div>
 
       <figure class="bento-cell image bento-hero reveal" data-delay="2">
@@ -1021,7 +1020,7 @@ section { position: relative; }
       <li class="reveal" data-delay="1">
         <span class="num">On the frame —</span>
         <h4>Wide horizontal, not vertical.</h4>
-        <p>The card runs wide — render on the right, information on the left. A vertical grid would fit six cards on screen; this layout fits two. The render gets room to breathe, and the buyer reads instead of scans.</p>
+        <p>The card runs wide — render on the right, information on the left. A vertical grid would fit six cards on screen; this layout fits one. The render gets room to breathe, and the buyer reads instead of scans.</p>
       </li>
       <li class="reveal" data-delay="2">
         <span class="num">On the tag —</span>
@@ -1075,7 +1074,7 @@ section { position: relative; }
     <div class="reveal">
       <div class="section-num">Lastly, looking back —</div>
       <p class="quote">The brief <em>was</em> the project.</p>
-      <p class="reflection-body">The site is live; the firm uses it daily. The thing I learned, after the fact, is that the brief was the actual project — translating <em>"premium"</em> into a system was the real work, and I did it implicitly instead of in writing. Next time, that translation gets written first.</p>
+      <p class="reflection-body">The site is live; the firm uses it daily. The hardest work wasn't the visual design — it was translating <em>"premium"</em> into a set of rules: no carousels, no badges, no chatbot. I did it in my head while designing. Next time, I'd write the rules before opening Figma.</p>
     </div>
 
     <dl class="sig reveal" data-delay="1">
