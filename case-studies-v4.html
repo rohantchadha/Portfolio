@@ -187,7 +187,7 @@ function Icon({ kind, size = 32, fill }) {
 }
 
 // ─── Menu bar ────────────────────────────────────────────
-function MenuBar({ onAbout, onAction, clock }) {
+function MenuBar({ view, onAction, clock }) {
   const [open, setOpen] = React.useState(null);
   React.useEffect(() => {
     if (!open) return;
@@ -197,15 +197,15 @@ function MenuBar({ onAbout, onAction, clock }) {
   }, [open]);
 
   const MENUS = {
-    apple:   [ {label:'About RohantOS…',action:'about'},{sep:true},{label:'Alarm Clock',disabled:true,glyph:'⏰'},{label:'Calculator',disabled:true,glyph:'🧮'},{label:'Chooser',disabled:true},{label:'Note Pad',disabled:true},{label:'Scrapbook',disabled:true} ],
-    File:    [ {label:'New Folder',shortcut:'⌘N',disabled:true},{label:'Open',shortcut:'⌘O',action:'open-work'},{label:'Open Homepage',action:'open-home'},{label:'Close Window',shortcut:'⌘W',disabled:true},{sep:true},{label:'Get Info',shortcut:'⌘I',disabled:true},{label:'Print…',shortcut:'⌘P',disabled:true},{sep:true},{label:'Quit',shortcut:'⌘Q',disabled:true} ],
+    apple:   [ {label:'Quit RohantOS',action:'quit'},{sep:true},{label:'Alarm Clock',disabled:true,glyph:'⏰'},{label:'Calculator',disabled:true,glyph:'🧮'},{label:'Chooser',disabled:true},{label:'Note Pad',disabled:true},{label:'Scrapbook',disabled:true} ],
+    File:    [ {label:'New Folder',shortcut:'⌘N',disabled:true},{label:'Open',shortcut:'⌘O',disabled:true},{label:'Open Homepage',action:'open-home'},{label:'Close Window',shortcut:'⌘W',disabled:true},{sep:true},{label:'Get Info',shortcut:'⌘I',disabled:true},{label:'Print…',shortcut:'⌘P',disabled:true},{sep:true},{label:'Quit',shortcut:'⌘Q',disabled:true} ],
     Edit:    [ {label:'Undo',shortcut:'⌘Z',disabled:true},{sep:true},{label:'Cut',shortcut:'⌘X',disabled:true},{label:'Copy',shortcut:'⌘C',disabled:true},{label:'Paste',shortcut:'⌘V',disabled:true},{label:'Clear',disabled:true},{sep:true},{label:'Select All',shortcut:'⌘A',disabled:true} ],
-    View:    [ {label:'by Small Icon',disabled:true},{label:'by Icon',check:true},{label:'by Name',disabled:true},{sep:true},{label:'Clean Up Window',disabled:true} ],
+    View:    [ {label:'by Small Icon',disabled:true},{label:'by Icon',check:view==='icon',action:'view-icon'},{label:'by List',check:view==='list',action:'view-list'},{sep:true},{label:'Clean Up Window',disabled:true} ],
     Special: [ {label:'Clean Up Desktop',disabled:true},{label:'Empty Trash…',disabled:true},{sep:true},{label:'Eject Disk',shortcut:'⌘E',disabled:true},{label:'Erase Disk…',disabled:true},{sep:true},{label:'Restart',action:'restart'},{label:'Shut Down',action:'shutdown'} ],
   };
   const LEFT = { apple:6, File:38, Edit:80, View:116, Special:158 };
   const toggle = k => e => { e.stopPropagation(); setOpen(o => o === k ? null : k); };
-  const choose = it => { if (it.disabled) return; setOpen(null); if (it.action === 'about') onAbout(); else if (it.action) onAction(it.action); };
+  const choose = it => { if (it.disabled) return; setOpen(null); if (it.action) onAction(it.action); };
 
   return (
     <div data-menubar style={{ height:22, background:T.chrome, borderBottom:`1px solid ${T.line}`, display:'flex', alignItems:'center', paddingLeft:10, paddingRight:10, fontFamily:T.ui, fontSize:13, color:T.ink, position:'relative', zIndex:1000, boxShadow:'0 1px 0 rgba(0,0,0,0.15)', flexShrink:0 }}>
@@ -271,8 +271,7 @@ function MacWindow({ win, focused, onFocus, onClose, onMinimize, onMove, childre
 }
 
 // ─── Explorer ────────────────────────────────────────────
-function Explorer({ onOpenProject }) {
-  const [view, setView] = React.useState('list');
+function Explorer({ onOpenProject, view, setView }) {
   const [sel,  setSel]  = React.useState(null);
   const selP = sel ? PROJECTS.find(p => p.id === sel) : null;
   return (
@@ -536,6 +535,7 @@ function MacDesktop() {
   const phase = useBoot();
   const clock = useClock();
   const vp    = useVP();   // live viewport dimensions
+  const [view, setView] = React.useState('list');
 
   // Icons anchored to right edge, recalculate when vp changes
   const [icons, setIcons] = React.useState(() => [
@@ -582,7 +582,12 @@ function MacDesktop() {
 
       {/* menu bar */}
       <div style={{ position:'relative',zIndex:1000,flexShrink:0 }}>
-        <MenuBar onAbout={openAbout} onAction={a=>{if(a==='open-work')openWork();else if(a==='open-home')openHomepage();}} clock={clock}/>
+        <MenuBar view={view} onAction={a=>{
+          if(a==='open-home' || a==='quit') { sessionStorage.setItem('skipSplash','1'); window.location.href='index.html#/desk'; }
+          else if(a==='restart' || a==='shutdown') { window.location.href='splash.html'; }
+          else if(a==='view-icon') setView('icon');
+          else if(a==='view-list') setView('list');
+        }} clock={clock}/>
       </div>
 
       {/* desktop area */}
@@ -607,7 +612,7 @@ function MacDesktop() {
           {wins.filter(w=>!w.minimized).map(w=>{
             const focused=w.id===focusedId;
             const fp={ key:w.id,win:w,focused,onFocus:()=>focus(w.id),onClose:()=>close(w.id),onMinimize:()=>minimize(w.id),onMove:(x,y)=>move(w.id,x,y) };
-            if(w.type==='explorer') return <MacWindow {...fp}><Explorer onOpenProject={openProject}/></MacWindow>;
+            if(w.type==='explorer') return <MacWindow {...fp}><Explorer onOpenProject={openProject} view={view} setView={setView}/></MacWindow>;
             if(w.type==='about')    return <AboutDialog {...fp}/>;
             if(w.type==='homepage') return <HomepageDialog {...fp}/>;
             if(w.type==='case')     return <MacWindow {...fp}><CaseStub project={w.project}/></MacWindow>;
