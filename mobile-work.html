@@ -511,13 +511,21 @@ function MacDesktop() {
     }
   }, [vp.w]);
 
+  // Helper — Work window dims/position scale with viewport, centered horizontally on mobile
+  const workWinSpec = (vpw, vph) => {
+    const w = Math.min(330, vpw - 24);
+    const x = Math.max(12, Math.round((vpw - w) / 2));
+    const h = Math.min(720, vph - 100);
+    return { id:'explorer', type:'explorer', title:'Work', x, y:42, w, h };
+  };
+
   // Windows — Work window auto-opens on load (About removed from initial seed)
   const { wins, focus, open, close, minimize, move } = useWindows([
-    { id:'explorer', type:'explorer', title:'Work', x:40, y:42, w:Math.min(550, window.innerWidth*0.43), h:Math.min(720, window.innerHeight-100) },
+    workWinSpec(window.innerWidth, window.innerHeight),
   ]);
 
   const openAbout    = () => open({ id:'about',    type:'about',    title:'About This Designer', x:Math.max(380,vp.w-476), y:68, w:370, h:400 });
-  const openWork     = () => open({ id:'explorer', type:'explorer', title:'Work',               x:40,                     y:42, w:Math.min(550,vp.w*0.43), h:Math.min(720, vp.h-100) });
+  const openWork     = () => open(workWinSpec(vp.w, vp.h));
   const openHomepage = () => open({ id:'homepage', type:'homepage', title:'Homepage',            x:Math.round(vp.w/2-150),y:Math.round(vp.h/2-100), w:300, h:200 });
   const openProject  = p  => {
     if(p.url){ window.location.href = p.url; return; }
@@ -538,7 +546,7 @@ function MacDesktop() {
 
   return (
     <div data-os-root onClick={()=>{}} onContextMenu={e=>e.preventDefault()}
-      style={{ position:'relative',width:'100vw',height:'100vh',overflow:'hidden',cursor:macCursor(),fontFamily:T.ui,background:'#000',display:'flex',flexDirection:'column' }}>
+      style={{ position:'relative',width:'100vw',height:'100dvh',overflow:'hidden',cursor:macCursor(),fontFamily:T.ui,background:'#000',display:'flex',flexDirection:'column' }}>
 
       <div style={{ position:'absolute',inset:0,zIndex:0,backgroundImage:"url('pixel_dog.jpeg')",backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat' }}/>
 
