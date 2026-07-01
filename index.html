@@ -228,7 +228,7 @@ body {
   z-index: 3;
 }
 .obj:hover { transform: translateY(-14px) scale(1.05); }
-.obj:hover .label { opacity: 1; transform: translateX(-50%) translateY(0); }
+.obj:hover .label { opacity: 1; transform: translateX(-50%) translateY(0); transition: opacity 0.18s ease, transform 0.18s ease; }
 .label {
   position: absolute;
   bottom: calc(100% + 10px);
@@ -244,7 +244,8 @@ body {
   border-radius: 4px;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  /* Fast fade-out prevents two labels from stacking when the cursor sweeps between overlapping objects. */
+  transition: opacity 0.08s ease, transform 0.08s ease;
   pointer-events: none;
 }
 .label::after {
@@ -973,7 +974,7 @@ body.dark #m-obj-computer .m-sonar-dot, body.dark #m-obj-computer .m-sonar-ring 
           <span class="ln ln-accent" id="l6">// Available to shape products worth shipping.</span>
           <span class="ln ln-cta"    id="l7">
             <span class="cta-sym">_</span>
-            <a class="cta-link" id="cta-btn" href="#">enter my desk →</a>
+            <a class="cta-link" id="cta-btn" href="#/desk">enter my desk →</a>
             <span class="endcur" id="endcur"></span>
           </span>
         </div>
@@ -1053,7 +1054,7 @@ body.dark #m-obj-computer .m-sonar-dot, body.dark #m-obj-computer .m-sonar-ring 
           <span class="m-ln m-ln-accent" id="m-l6">// Available to shape products worth shipping.</span>
           <span class="m-ln m-ln-cta"    id="m-l7">
             <span class="m-cta-sym">_</span>
-            <a class="m-cta-link" id="m-cta-btn" href="#">enter my desk →</a>
+            <a class="m-cta-link" id="m-cta-btn" href="#/desk">enter my desk →</a>
             <span class="m-endcur" id="m-endcur"></span>
           </span>
         </div>
@@ -1209,6 +1210,9 @@ body.dark #m-obj-computer .m-sonar-dot, body.dark #m-obj-computer .m-sonar-ring 
     var desk   = document.getElementById('desk-page');
     var toggleWrap = document.getElementById('toggle-wrap');
 
+    // Reflect desk state in the URL so it's shareable and browser Back works.
+    try { history.pushState({page: 'desk'}, '', '#/desk'); } catch(e) {}
+
     // Remember the user has entered the desk — persists across reloads in this tab.
     // Cleared automatically when the tab/window is closed (= "hard refresh").
     sessionStorage.setItem('skipSplash', '1');
@@ -1240,9 +1244,18 @@ body.dark #m-obj-computer .m-sonar-dot, body.dark #m-obj-computer .m-sonar-ring 
   // Skip splash if the user has already entered desk this session
   // (set in goToDesk, also set by back-buttons on About/Contact)
   // Also honor #/desk hash so mobile-set hashes work after a layout swap.
-  if (window.location.hash === '#/desk' || sessionStorage.getItem('skipSplash')) {
-    goToDesk();
-  }
+  (function initRouting() {
+    var hash = window.location.hash;
+    var landOnDesk = hash === '#/desk' || sessionStorage.getItem('skipSplash');
+    if (landOnDesk) {
+      goToDesk();
+    } else {
+      try { history.replaceState({page: 'splash'}, '', '#/splash'); } catch(e) {}
+    }
+  })();
+
+  // Browser back button: reload so splash replays from a clean state
+  window.addEventListener('popstate', function() { window.location.reload(); });
 
   // Cross-layout sync: if mobile entered desk while we were idle,
   // catch up when the viewport crosses into desktop range.

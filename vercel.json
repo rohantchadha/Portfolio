@@ -3,7 +3,8 @@
     { "source": "/work/rent-flow",       "destination": "/work/rent-flow/",       "permanent": false },
     { "source": "/work/absolute-realty", "destination": "/work/absolute-realty/", "permanent": false },
     { "source": "/work/kb-foundation",   "destination": "/work/kb-foundation/",   "permanent": false },
-    { "source": "/work/pettygpt",        "destination": "/work/pettygpt/",        "permanent": false }
+    { "source": "/work/pettygpt",        "destination": "/work/pettygpt/",        "permanent": false },
+    { "source": "/work/pousse-le-rit",   "destination": "/work/pousse-le-rit/",   "permanent": false }
   ],
   "rewrites": [
     { "source": "/work",    "destination": "/case-studies-v4.html" },
@@ -20,6 +21,9 @@
     { "source": "/work/kb-foundation/:path*",   "destination": "/kb-foundation/:path*" },
 
     { "source": "/work/pettygpt/",         "destination": "/pettygpt/pettygpt-case-study.html" },
-    { "source": "/work/pettygpt/:path*",   "destination": "/pettygpt/:path*" }
+    { "source": "/work/pettygpt/:path*",   "destination": "/pettygpt/:path*" },
+
+    { "source": "/work/pousse-le-rit/",       "destination": "/pousse-le-rit/index.html" },
+    { "source": "/work/pousse-le-rit/:path*", "destination": "/pousse-le-rit/:path*" }
   ]
 }

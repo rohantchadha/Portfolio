@@ -512,12 +512,15 @@ section { position: relative; }
   justify-content: center;
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  /* Outgoing: fade out fast, no delay — prevents readable overlap on mobile. */
+  transition: opacity .18s var(--ease), transform .3s var(--ease);
   pointer-events: none;
 }
 .caption.is-active {
   opacity: 1;
   transform: translateY(0);
+  /* Incoming: wait for outgoing to hide, then fade in. */
+  transition: opacity .45s var(--ease) .18s, transform .5s var(--ease) .18s;
 }
 .caption .lab {
   font-family: var(--serif);

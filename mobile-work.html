@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Case Studies · RohantOS v4</title>
+<title>Case Studies · RohantOS v7.0.1</title>
 <!-- Open Graph (social sharing) -->
 <meta property="og:title" content="Case Studies — Rohant Chadha">
 <meta property="og:description" content="Selected work: Absolute Realty, Rent Flow, KB Foundation, PettyGPT.">
@@ -511,10 +511,12 @@ function MacDesktop() {
     }
   }, [vp.w]);
 
-  // Helper — Work window dims/position scale with viewport, centered horizontally on mobile
+  // Helper — Work window dims/position scale with viewport.
+  // On narrow viewports (<480), reserve a right-side dock so the Work/Homepage icons stay visible.
   const workWinSpec = (vpw, vph) => {
-    const w = Math.min(330, vpw - 24);
-    const x = Math.max(12, Math.round((vpw - w) / 2));
+    const dock = vpw < 480 ? 96 : 0;
+    const w = Math.min(330, vpw - 24 - dock);
+    const x = Math.max(12, Math.round((vpw - dock - w) / 2));
     const h = Math.min(720, vph - 100);
     return { id:'explorer', type:'explorer', title:'Work', x, y:42, w, h };
   };
@@ -529,8 +531,9 @@ function MacDesktop() {
   const openHomepage = () => open({ id:'homepage', type:'homepage', title:'Homepage',            x:Math.round(vp.w/2-150),y:Math.round(vp.h/2-100), w:300, h:200 });
   const openProject  = p  => {
     if(p.url){ window.location.href = p.url; return; }
-    const W = Math.min(360, vp.w - 24);
-    const x = Math.max(12, Math.round((vp.w - W) / 2));
+    const dock = vp.w < 480 ? 96 : 0;
+    const W = Math.min(360, vp.w - 24 - dock);
+    const x = Math.max(12, Math.round((vp.w - dock - W) / 2));
     const y = Math.max(40, Math.round(vp.h * 0.18));
     open({ id:`case-${p.id}`, type:'case', project:p, title:p.name, x, y, w:W, h:300 });
   };
@@ -586,7 +589,7 @@ function MacDesktop() {
         </div>
 
         {/* minimised tabs */}
-        <div style={{ position:'absolute',bottom:8,left:240,right:240,display:'flex',gap:8,flexWrap:'wrap',pointerEvents:'none',zIndex:60 }}>
+        <div style={{ position:'absolute',bottom:8,left:12,right:vp.w < 480 ? 108 : 240,display:'flex',gap:8,flexWrap:'wrap',pointerEvents:'none',zIndex:60 }}>
           {wins.filter(w=>w.minimized).map(w=>(
             <button key={w.id} onClick={()=>focus(w.id)} style={{ pointerEvents:'auto',padding:'3px 10px',background:T.chrome,border:`1px solid ${T.line}`,boxShadow:`1.5px 1.5px 0 0 ${T.line}`,fontFamily:T.ui,fontSize:10,cursor:'pointer' }}>{w.title}</button>
           ))}
