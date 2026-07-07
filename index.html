@@ -1124,6 +1124,12 @@ body.dark #m-obj-computer .m-sonar-dot, body.dark #m-obj-computer .m-sonar-ring 
 /* === Desktop script — wrapped in IIFE for scope isolation === */
 (function(){
 
+  // Preload dark-mode desk assets so the toggle swap is instant.
+  // Without this, the <img> keeps showing the light image until the
+  // dark file downloads (~1-2s), flashing a white desk over a black body.
+  ['basenightmode2.0.jpg','cupnightmode.jpg','computernightmode.jpg','phonenightmode.jpg']
+    .forEach(function(src){ var i = new Image(); i.src = src; });
+
   // Custom cursor
   const cur = document.getElementById('custom-cursor');
   const dot = document.getElementById('cursor-dot');
